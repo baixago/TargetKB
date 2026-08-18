@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>TargetKB – Exact Size Image Compressor</title>
+  <meta
+    name="description"
+    content="Compress JPG, PNG and WebP images to your exact target size with TargetKB."
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html" aria-label="TargetKB homepage">
+        <span class="brand-mark">TK</span>
+        <span>TargetKB</span>
+      </a>
+
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="#compressor">Compressor</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#privacy">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-section">
+      <div class="container hero-content">
+        <p class="eyebrow">FAST • PRIVATE • EXACT SIZE</p>
+
+        <h1>Compress Images to Your Exact Size</h1>
+
+        <p class="hero-text">
+          Reduce JPG, PNG and WebP images to 50KB, 100KB or your preferred size.
+          Everything is designed for a simple and fast experience.
+        </p>
+
+        <a class="hero-link" href="#compressor">
+          Start Compressing
+          <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </section>
+
+    <section id="compressor" class="compressor-section">
+      <div class="container">
+        <div class="tool-card">
+          <div class="tool-heading">
+            <p class="section-label">IMAGE COMPRESSOR</p>
+            <h2>Choose an image to begin</h2>
+            <p>
+              Supported formats: JPG, PNG and WebP
+            </p>
+          </div>
+
+          <label class="upload-box" for="imageInput">
+            <span class="upload-icon" aria-hidden="true">↑</span>
+            <span class="upload-title">Drag & drop your image here</span>
+            <span class="upload-subtitle">or choose a file from your device</span>
+
+            <span class="choose-button">Choose Image</span>
+
+            <input
+              id="imageInput"
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              hidden
+            />
+          </label>
+
+          <p id="fileMessage" class="file-message" aria-live="polite">
+            No image selected yet.
+          </p>
+
+          <div class="options-section">
+            <h3>Choose target size</h3>
+
+            <div class="target-buttons" role="group" aria-label="Target image size">
+              <button class="target-button" type="button" data-target="51200">
+                50KB
+              </button>
+
+              <button class="target-button" type="button" data-target="102400">
+                100KB
+              </button>
+
+              <button class="target-button secondary-button" type="button" data-target="0">
+                Best Quality
+              </button>
+            </div>
+          </div>
+
+          <button id="compressButton" class="compress-button" type="button" disabled>
+            Compress Image
+          </button>
+
+          <p id="statusMessage" class="status-message" aria-live="polite"></p>
+        </div>
+
+        <section id="resultSection" class="result-section" hidden>
+          <div class="result-heading">
+            <p class="section-label">COMPRESSION RESULT</p>
+            <h2>Before and after</h2>
+          </div>
+
+          <div class="comparison-grid">
+            <article class="preview-card">
+              <h3>Original Image</h3>
+              <div class="image-preview">
+                <img id="originalPreview" src="" alt="Original image preview" />
+              </div>
+              <p id="originalInfo">Original file information</p>
+            </article>
+
+            <article class="preview-card">
+              <h3>Compressed Image</h3>
+              <div class="image-preview">
+                <img id="compressedPreview" src="" alt="Compressed image preview" />
+              </div>
+              <p id="compressedInfo">Compressed file information</p>
+            </article>
+          </div>
+
+          <div class="result-summary">
+            <p>
+              Size saved:
+              <strong id="savedPercentage">0%</strong>
+            </p>
+
+            <p id="qualityMessage">
+              Your compressed image will appear here.
+            </p>
+          </div>
+
+          <a id="downloadButton" class="download-button" href="#" download>
+            Download Compressed Image
+          </a>
+        </section>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="info-section">
+      <div class="container info-grid">
+        <article class="info-card">
+          <span class="info-number">01</span>
+          <h2>Upload</h2>
+          <p>
+            Select a JPG, PNG or WebP image from your phone or computer.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <span class="info-number">02</span>
+          <h2>Choose Size</h2>
+          <p>
+            Select 50KB, 100KB or the quality mode that fits your needs.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <span class="info-number">03</span>
+          <h2>Download</h2>
+          <p>
+            Compare the result and download your compressed image.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="privacy" class="privacy-section">
+      <div class="container privacy-box">
+        <p class="section-label">PRIVACY FIRST</p>
+        <h2>Your images stay in your browser</h2>
+        <p>
+          TargetKB is designed for browser-based image processing. We will
+          verify and describe the exact privacy behavior before making any
+          permanent privacy claims.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 TargetKB. All rights reserved.</p>
+
+      <div class="footer-links">
+        <a href="#privacy">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+  </html>
