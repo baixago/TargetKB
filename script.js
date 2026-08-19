@@ -1,290 +1,193 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+const imageInput = document.getElementById("imageInput");
+const dropZone = document.getElementById("dropZone");
+const fileName = document.getElementById("fileName");
+const compressBtn = document.getElementById("compressBtn");
+const result = document.getElementById("result");
+const preview = document.getElementById("preview");
+const resultText = document.getElementById("resultText");
+const downloadBtn = document.getElementById("downloadBtn");
+const sizeButtons = document.querySelectorAll(".size-btn");
 
-body {
-  font-family: Arial, sans-serif;
-  background: #f6f8fc;
-  color: #172033;
-  line-height: 1.5;
-}
+let selectedFile = null;
+let targetSize = 51200;
+let oldUrl = null;
 
-header {
-  background: #fff;
-  border-bottom: 1px solid #e5e9f0;
-  padding: 16px 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+sizeButtons.forEach(function(button) {
+  button.addEventListener("click", function() {
+    sizeButtons.forEach(function(item) {
+      item.classList.remove("active");
+    });
 
-.logo {
-  color: #1769e0;
-  font-size: 21px;
-  font-weight: bold;
-}
+    button.classList.add("active");
+    targetSize = Number(button.dataset.size);
+  });
+});
 
-nav {
-  display: flex;
-  gap: 16px;
-}
+imageInput.addEventListener("change", function(event) {
+  chooseFile(event.target.files[0]);
+});
 
-nav a {
-  color: #4d596b;
-  text-decoration: none;
-  font-size: 14px;
-}
+["dragenter", "dragover"].forEach(function(eventName) {
+  dropZone.addEventListener(eventName, function(event) {
+    event.preventDefault();
+    dropZone.classList.add("drag");
+  });
+});
 
-.hero {
-  max-width: 850px;
-  margin: auto;
-  padding: 55px 20px 30px;
-  text-align: center;
-}
+["dragleave", "drop"].forEach(function(eventName) {
+  dropZone.addEventListener(eventName, function(event) {
+    event.preventDefault();
+    dropZone.classList.remove("drag");
+  });
+});
 
-.tagline {
-  color: #1769e0;
-  font-size: 12px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-}
+dropZone.addEventListener("drop", function(event) {
+  chooseFile(event.dataTransfer.files[0]);
+});
 
-h1 {
-  font-size: clamp(30px, 7vw, 52px);
-  line-height: 1.1;
-  margin-bottom: 18px;
-}
-
-.hero p {
-  max-width: 620px;
-  margin: auto;
-  color: #687386;
-}
-
-.compressor {
-  max-width: 700px;
-  margin: 20px auto 65px;
-  padding: 0 20px;
-}
-
-.card {
-  background: #fff;
-  border: 1px solid #e1e7f0;
-  border-radius: 18px;
-  padding: 25px;
-  box-shadow: 0 12px 30px rgba(25, 45, 80, 0.07);
-}
-
-.section-title {
-  text-align: center;
-  color: #1769e0;
-  font-size: 13px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  margin-bottom: 20px;
-}
-
-.drop-zone {
-  text-align: center;
-  border: 2px dashed #b7c8df;
-  border-radius: 14px;
-  padding: 35px 15px;
-  background: #f9fbff;
-}
-
-.drop-zone h2 {
-  font-size: 20px;
-  margin-bottom: 8px;
-}
-
-.drop-zone p {
-  color: #748095;
-  font-size: 14px;
-  margin-bottom: 18px;
-}
-
-input[type="file"] {
-  display: none;
-}
-
-.choose-btn,
-.compress-btn,
-.download-btn {
-  display: inline-block;
-  border: 0;
-  border-radius: 8px;
-  padding: 13px 20px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.choose-btn,
-.compress-btn {
-  background: #1769e0;
-}
-
-.choose-btn:hover,
-.compress-btn:hover {
-  background: #0d54bc;
-}
-
-#fileName {
-  color: #687386;
-  font-size: 13px;
-  margin-top: 15px;
-}
-
-.size-title {
-  text-align: center;
-  font-weight: bold;
-  margin: 25px 0 12px;
-}
-
-.size-options {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 9px;
-}
-
-.size-options button {
-  background: white;
-  color: #344054;
-  border: 1px solid #cbd6e5;
-  border-radius: 8px;
-  padding: 11px 17px;
-  cursor: pointer;
-}
-
-.size-options button.active {
-  background: #eaf2ff;
-  border-color: #1769e0;
-  color: #1769e0;
-  font-weight: bold;
-}
-
-.compress-btn {
-  width: 100%;
-  margin-top: 22px;
-  font-size: 16px;
-}
-
-#result {
-  display: none;
-  text-align: center;
-  border-top: 1px solid #e5e9f0;
-  margin-top: 24px;
-  padding-top: 22px;
-}
-
-#preview {
-  display: block;
-  max-width: 100%;
-  max-height: 250px;
-  margin: 0 auto 13px;
-  border-radius: 10px;
-}
-
-#resultText {
-  color: #5d6a7e;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-.download-btn {
-  background: #159765;
-}
-
-.steps {
-  max-width: 950px;
-  margin: 0 auto 60px;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.step {
-  background: white;
-  border: 1px solid #e1e7f0;
-  border-radius: 13px;
-  padding: 22px;
-}
-
-.step-number {
-  color: #1769e0;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.step h3 {
-  margin: 7px 0;
-}
-
-.step p {
-  color: #687386;
-  font-size: 14px;
-}
-
-.privacy {
-  max-width: 850px;
-  margin: 0 auto 60px;
-  padding: 28px 20px;
-  background: #eaf3ff;
-  border-radius: 15px;
-  text-align: center;
-}
-
-.privacy h2 {
-  margin-bottom: 8px;
-  font-size: 22px;
-}
-
-.privacy p {
-  color: #536174;
-}
-
-footer {
-  padding: 25px 15px;
-  text-align: center;
-  background: #172033;
-  color: #c8d0dc;
-  font-size: 13px;
-}
-
-footer a {
-  color: white;
-  text-decoration: none;
-  margin: 0 7px;
-}
-
-@media (max-width: 650px) {
-  header {
-    padding: 15px 18px;
-    align-items: flex-start;
+function chooseFile(file) {
+  if (!file || !file.type.startsWith("image/")) {
+    alert("Please select a JPG, PNG or WebP image.");
+    return;
   }
 
-  nav {
-    flex-direction: column;
-    gap: 5px;
-    text-align: right;
-  }
+  selectedFile = file;
+  fileName.textContent =
+    file.name + " • " + formatBytes(file.size);
 
-  .hero {
-    padding-top: 42px;
-  }
-
-  .card {
-    padding: 17px;
-  }
-
-  .steps {
-    grid-template-columns: 1fr;
-  }
+  result.style.display = "none";
 }
+
+compressBtn.addEventListener("click", async function() {
+  if (!selectedFile) {
+    alert("Please choose an image first.");
+    return;
+  }
+
+  compressBtn.disabled = true;
+  compressBtn.textContent = "Compressing...";
+
+  try {
+    const blob = await compressImage(selectedFile, targetSize);
+
+    if (oldUrl) {
+      URL.revokeObjectURL(oldUrl);
+    }
+
+    oldUrl = URL.createObjectURL(blob);
+    preview.src = oldUrl;
+
+    resultText.textContent =
+      "Original: " + formatBytes(selectedFile.size) +
+      " • Compressed: " + formatBytes(blob.size);
+
+    downloadBtn.href = oldUrl;
+    downloadBtn.download = "targetkb-compressed.jpg";
+    result.style.display = "block";
+  } catch (error) {
+    alert("Compression failed. Please try another image.");
+  }
+
+  compressBtn.disabled = false;
+  compressBtn.textContent = "Compress Image";
+});
+
+function loadImage(file) {
+  return new Promise(function(resolve, reject) {
+    const image = new Image();
+    const url = URL.createObjectURL(file);
+
+    image.onload = function() {
+      URL.revokeObjectURL(url);
+      resolve(image);
+    };
+
+    image.onerror = reject;
+    image.src = url;
+  });
+}
+
+function createBlob(canvas, quality) {
+  return new Promise(function(resolve, reject) {
+    canvas.toBlob(
+      function(blob) {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Image conversion failed"));
+        }
+      },
+      "image/jpeg",
+      quality
+    );
+  });
+}
+
+async function compressImage(file, target) {
+  const image = await loadImage(file);
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+
+  let quality = 0.85;
+  let scale = 1;
+  let blob = null;
+
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+
+  context.drawImage(
+    image,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  if (target === 0) {
+    return createBlob(canvas, 0.92);
+  }
+
+  for (let i = 0; i < 15; i++) {
+    blob = await createBlob(canvas, quality);
+
+    if (blob.size <= target) {
+      return blob;
+    }
+
+    if (quality > 0.35) {
+      quality -= 0.06;
+    } else {
+      scale *= 0.85;
+
+      canvas.width = Math.max(
+        300,
+        Math.round(image.naturalWidth * scale)
+      );
+
+      canvas.height = Math.max(
+        300,
+        Math.round(image.naturalHeight * scale)
+      );
+
+      context.drawImage(
+        image,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      quality = 0.78;
+    }
+  }
+
+  return blob;
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) {
+    return bytes + " B";
+  }
+
+  return (bytes / 1024).toFixed(1) + " KB";
+      }
