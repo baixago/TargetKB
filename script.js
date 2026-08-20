@@ -1,13 +1,23 @@
 const imageInput = document.getElementById("imageInput");
-const uploadBox = document.querySelector(".upload-box");
-const fileMessage = document.getElementById("fileMessage");
+
+const uploadBox = document.getElementById("uploadBox");
+const uploadInitial = document.getElementById("uploadInitial");
+const uploadSelected = document.getElementById("uploadSelected");
+
+const selectedPreview = document.getElementById("selectedPreview");
+const selectedInfo = document.getElementById("selectedInfo");
+const changeImageButton = document.getElementById("changeImageButton");
+
+const targetButtons = document.querySelectorAll(".target-button");
+
+const customBox = document.getElementById("customBox");
+const customSize = document.getElementById("customSize");
 
 const compressButton = document.getElementById("compressButton");
 const statusMessage = document.getElementById("statusMessage");
 
-const targetButtons = document.querySelectorAll(".target-button");
-
 const resultSection = document.getElementById("resultSection");
+
 const originalPreview = document.getElementById("originalPreview");
 const compressedPreview = document.getElementById("compressedPreview");
 
@@ -19,384 +29,362 @@ const qualityMessage = document.getElementById("qualityMessage");
 
 const downloadButton = document.getElementById("downloadButton");
 
+
 let selectedFile = null;
-let targetSize = 51200; // 50 KB
+let targetSize = 51200;
 let currentDownloadUrl = null;
 
 
-// =========================
-// TARGET BUTTONS
-// =========================
+/* =========================
+   TARGET BUTTONS
+========================= */
 
-targetButtons.forEach((button) => {
-  button.addEventListener("click", () => {
+targetButtons.forEach(function(button) {
 
-    targetButtons.forEach((item) => {
+  button.addEventListener("click", function() {
+
+    targetButtons.forEach(function(item) {
       item.classList.remove("active");
     });
 
     button.classList.add("active");
 
-    const target = button.dataset.target;
+    const value = button.dataset.target;
 
-    if (target === "custom") {
-      showCustomInput();
-      return;
+    if (value === "custom") {
+
+      customBox.classList.remove("hidden");
+
+      targetSize = null;
+
+      customSize.focus();
+
+    } else {
+
+      customBox.classList.add("hidden");
+
+      targetSize = Number(value);
+
     }
 
-    targetSize = Number(target);
+    resultSection.classList.add("hidden");
 
-    hideCustomInput();
-
-    setStatus(
-      `Target size selected: ${formatBytes(targetSize)}`,
-      "success"
-    );
   });
+
 });
 
 
-// =========================
-// CUSTOM INPUT
-// =========================
+/* =========================
+   CUSTOM SIZE
+========================= */
 
-function showCustomInput() {
+customSize.addEventListener("input", function() {
 
-  let existing = document.getElementById("customTargetBox");
+  const kb = Number(customSize.value);
 
-  if (existing) {
-    existing.hidden = false;
-    existing.querySelector("input").focus();
-    return;
+  if (kb >= 10) {
+    targetSize = kb * 1024;
+  } else {
+    targetSize = null;
   }
 
-  const box = document.createElement("div");
-
-  box.id = "customTargetBox";
-  box.className = "custom-target-box";
-
-  box.innerHTML = `
-    <label for="customTargetInput">
-      Enter target size
-    </label>
-
-    <div class="custom-target-row">
-      <input
-        id="customTargetInput"
-        type="number"
-        min="2"
-        max="50000"
-        step="1"
-        placeholder="75"
-        inputmode="numeric"
-      />
-
-      <span>KB</span>
-    </div>
-
-    <small>
-      Example: 75 KB, 150 KB, 250 KB or 500 KB
-    </small>
-
-    <p id="customError" class="custom-error"></p>
-  `;
-
-  const optionsSection = document.querySelector(".options-section");
-
-  optionsSection.appendChild(box);
-
-  const input = document.getElementById("customTargetInput");
-
-  input.addEventListener("input", () => {
-
-    const value = Number(input.value);
-    const error = document.getElementById("customError");
-
-    if (!value || value < 2) {
-
-      error.textContent = "Please enter at least 2 KB.";
-      targetSize = 0;
-      return;
-    }
-
-    if (value > 50000) {
-
-      error.textContent = "Maximum target size is 50,000 KB.";
-      targetSize = 0;
-      return;
-    }
-
-    error.textContent = "";
-
-    targetSize = Math.round(value * 1024);
-
-    setStatus(
-      `Custom target selected: ${value} KB`,
-      "success"
-    );
-  });
-
-  input.focus();
-}
+});
 
 
-function hideCustomInput() {
+/* =========================
+   IMAGE SELECT
+========================= */
 
-  const box = document.getElementById("customTargetBox");
-
-  if (box) {
-    box.hidden = true;
-  }
-}
-
-
-// =========================
-// IMAGE SELECT
-// =========================
-
-imageInput.addEventListener("change", (event) => {
+imageInput.addEventListener("change", function(event) {
 
   const file = event.target.files[0];
 
-  selectFile(file);
+  if (file) {
+    selectFile(file);
+  }
+
 });
 
 
 function selectFile(file) {
 
-  if (!file) {
-    return;
-  }
+  if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
 
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/webp"
-  ];
-
-  if (!allowedTypes.includes(file.type)) {
-
-    setStatus(
-      "Please choose a JPG, PNG or WebP image.",
-      "error"
-    );
+    showError("Please select a JPG, PNG or WebP image.");
 
     return;
   }
+
 
   selectedFile = file;
 
-  fileMessage.textContent =
-    `${file.name} • ${formatBytes(file.size)}`;
+
+  /* Show thumbnail */
+
+  const previewUrl = URL.createObjectURL(file);
+
+  selectedPreview.src = previewUrl;
+
+
+  /* Show friendly upload state */
+
+  uploadInitial.classList.add("hidden");
+  uploadSelected.classList.remove("hidden");
+
+
+  selectedInfo.textContent =
+    "Original size: " + formatBytes(file.size);
+
 
   compressButton.disabled = false;
 
-  resultSection.hidden = true;
+  resultSection.classList.add("hidden");
 
-  setStatus(
-    "Image selected. Choose your target size.",
-    "success"
-  );
+  showSuccess("Image selected and ready to compress.");
 
-  originalPreview.src = URL.createObjectURL(file);
-
-  originalInfo.textContent =
-    `Original: ${formatBytes(file.size)}`;
 }
 
 
-// =========================
-// DRAG & DROP
-// =========================
+/* =========================
+   CHANGE IMAGE
+========================= */
 
-["dragenter", "dragover"].forEach((eventName) => {
+changeImageButton.addEventListener("click", function(event) {
 
-  uploadBox.addEventListener(eventName, (event) => {
+  event.preventDefault();
+  event.stopPropagation();
 
-    event.preventDefault();
+  imageInput.click();
 
-    uploadBox.classList.add("dragging");
-  });
 });
 
 
-["dragleave", "drop"].forEach((eventName) => {
+/* =========================
+   DRAG & DROP
+========================= */
 
-  uploadBox.addEventListener(eventName, (event) => {
+["dragenter", "dragover"].forEach(function(eventName) {
+
+  uploadBox.addEventListener(eventName, function(event) {
 
     event.preventDefault();
 
-    uploadBox.classList.remove("dragging");
+    uploadBox.style.borderColor = "#2f6fed";
+    uploadBox.style.background = "#f0f5ff";
+
   });
+
 });
 
 
-uploadBox.addEventListener("drop", (event) => {
+["dragleave", "drop"].forEach(function(eventName) {
+
+  uploadBox.addEventListener(eventName, function(event) {
+
+    event.preventDefault();
+
+    uploadBox.style.borderColor = "";
+    uploadBox.style.background = "";
+
+  });
+
+});
+
+
+uploadBox.addEventListener("drop", function(event) {
 
   const file = event.dataTransfer.files[0];
 
-  selectFile(file);
+  if (file) {
+    selectFile(file);
+  }
+
 });
 
 
-// =========================
-// COMPRESS BUTTON
-// =========================
+/* =========================
+   COMPRESS
+========================= */
 
-compressButton.addEventListener("click", async () => {
+compressButton.addEventListener("click", async function() {
 
   if (!selectedFile) {
 
-    setStatus(
-      "Please choose an image first.",
-      "error"
-    );
+    showError("Please choose an image first.");
 
     return;
   }
 
-  if (!targetSize || targetSize < 2048) {
 
-    setStatus(
-      "Please choose a valid target size.",
-      "error"
-    );
+  if (!targetSize || targetSize < 10 * 1024) {
+
+    showError("Please enter a target size of at least 10 KB.");
 
     return;
   }
+
 
   compressButton.disabled = true;
   compressButton.textContent = "Compressing...";
 
-  setStatus(
-    "Compressing your image...",
-    ""
-  );
+  statusMessage.className = "status-message";
+  statusMessage.textContent = "Working on your image...";
+
 
   try {
 
-    const result = await compressImage(
+    const blob = await compressImage(
       selectedFile,
       targetSize
     );
 
-    if (currentDownloadUrl) {
 
+    if (currentDownloadUrl) {
       URL.revokeObjectURL(currentDownloadUrl);
     }
 
+
     currentDownloadUrl =
-      URL.createObjectURL(result.blob);
+      URL.createObjectURL(blob);
+
+
+    /* Preview */
+
+    originalPreview.src =
+      URL.createObjectURL(selectedFile);
 
     compressedPreview.src =
       currentDownloadUrl;
 
+
+    /* Information */
+
     originalInfo.textContent =
-      `Original: ${formatBytes(selectedFile.size)}`;
+      "Original: " +
+      formatBytes(selectedFile.size);
+
 
     compressedInfo.textContent =
-      `Compressed: ${formatBytes(result.blob.size)}`;
+      "Compressed: " +
+      formatBytes(blob.size);
+
 
     const saved = Math.max(
       0,
       Math.round(
-        (1 - result.blob.size / selectedFile.size) * 100
+        (1 - blob.size / selectedFile.size) * 100
       )
     );
 
-    savedPercentage.textContent =
-      `${saved}%`;
 
-    if (result.blob.size <= targetSize) {
+    savedPercentage.textContent =
+      saved + "%";
+
+
+    if (blob.size <= targetSize) {
 
       qualityMessage.textContent =
-        `Target reached: ${formatBytes(result.blob.size)}.`;
+        "Target size reached while preserving the best practical quality.";
 
     } else {
 
       qualityMessage.textContent =
-        `Best practical result: ${formatBytes(result.blob.size)}.`;
+        "The image could not reach the selected target without excessive quality loss. Try a larger target.";
+
     }
+
 
     downloadButton.href =
       currentDownloadUrl;
 
     downloadButton.download =
-      `targetkb-${getBaseName(selectedFile.name)}.jpg`;
+      "targetkb-compressed.jpg";
 
-    resultSection.hidden = false;
 
-    setStatus(
-      "Compression complete!",
-      "success"
-    );
+    resultSection.classList.remove("hidden");
+
+
+    statusMessage.className =
+      "status-message success";
+
+    statusMessage.textContent =
+      "Compression complete.";
+
 
     resultSection.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
 
+
   } catch (error) {
 
     console.error(error);
 
-    setStatus(
-      "Compression failed. Please try another image.",
-      "error"
+    showError(
+      "Compression failed. Please try another image."
     );
 
-  } finally {
-
-    compressButton.disabled = false;
-    compressButton.textContent = "Compress Image";
   }
+
+
+  compressButton.disabled = false;
+  compressButton.textContent = "Compress Image";
+
 });
 
 
-// =========================
-// IMAGE LOADER
-// =========================
+/* =========================
+   IMAGE LOADING
+========================= */
 
 function loadImage(file) {
 
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject) {
 
     const image = new Image();
 
     const url =
       URL.createObjectURL(file);
 
-    image.onload = () => {
+
+    image.onload = function() {
 
       URL.revokeObjectURL(url);
 
       resolve(image);
+
     };
 
-    image.onerror = () => {
+
+    image.onerror = function() {
 
       URL.revokeObjectURL(url);
 
       reject(
-        new Error("Image could not be loaded.")
+        new Error("Could not load image")
       );
+
     };
 
+
     image.src = url;
+
   });
+
 }
 
 
-// =========================
-// CANVAS → JPEG
-// =========================
+/* =========================
+   CANVAS TO JPEG
+========================= */
 
 function canvasToBlob(canvas, quality) {
 
-  return new Promise((resolve, reject) => {
+  return new Promise(function(resolve, reject) {
 
     canvas.toBlob(
-      (blob) => {
+      function(blob) {
 
         if (blob) {
 
@@ -405,53 +393,52 @@ function canvasToBlob(canvas, quality) {
         } else {
 
           reject(
-            new Error("Could not create image.")
+            new Error("Could not create image")
           );
+
         }
+
       },
       "image/jpeg",
       quality
     );
+
   });
+
 }
 
 
-// =========================
-// MAIN COMPRESSION
-// =========================
+/* =========================
+   COMPRESSION ENGINE
+========================= */
 
 async function compressImage(file, target) {
 
   const image =
     await loadImage(file);
 
-  let scale = 1;
 
-  let canvas =
+  const canvas =
     document.createElement("canvas");
 
-  let context =
+
+  const context =
     canvas.getContext("2d");
 
-  let bestBlob = null;
 
-  let bestDifference = Infinity;
+  let scale = 1;
+  let quality = 0.88;
+  let blob = null;
 
 
-  // Try different image dimensions
-  for (let scaleAttempt = 0; scaleAttempt < 12; scaleAttempt++) {
+  canvas.width =
+    image.naturalWidth;
 
-    canvas.width =
-      Math.max(
-        300,
-        Math.round(image.naturalWidth * scale)
-      );
+  canvas.height =
+    image.naturalHeight;
 
-    canvas.height =
-      Math.max(
-        300,
-        Math.round(image.naturalHeight * scale)
-      );
+
+  for (let attempt = 0; attempt < 25; attempt++) {
 
     context.clearRect(
       0,
@@ -459,6 +446,7 @@ async function compressImage(file, target) {
       canvas.width,
       canvas.height
     );
+
 
     context.drawImage(
       image,
@@ -469,161 +457,107 @@ async function compressImage(file, target) {
     );
 
 
-    // Binary search for best JPEG quality
-    let low = 0.05;
-    let high = 0.95;
+    blob =
+      await canvasToBlob(
+        canvas,
+        quality
+      );
 
-    let localBest = null;
+
+    if (blob.size <= target) {
+
+      return blob;
+
+    }
 
 
-    for (let i = 0; i < 9; i++) {
+    if (quality > 0.35) {
 
-      const quality =
-        (low + high) / 2;
+      quality -= 0.055;
 
-      const blob =
-        await canvasToBlob(
-          canvas,
-          quality
+    } else {
+
+      scale *= 0.86;
+
+
+      canvas.width =
+        Math.max(
+          250,
+          Math.round(
+            image.naturalWidth * scale
+          )
         );
 
-      const difference =
-        Math.abs(blob.size - target);
+
+      canvas.height =
+        Math.max(
+          250,
+          Math.round(
+            image.naturalHeight * scale
+          )
+        );
 
 
-      if (
-        !localBest ||
-        difference < localBest.difference
-      ) {
+      quality = 0.78;
 
-        localBest = {
-          blob: blob,
-          difference: difference
-        };
-      }
-
-
-      if (blob.size > target) {
-
-        high = quality;
-
-      } else {
-
-        low = quality;
-      }
     }
 
-
-    if (
-      localBest &&
-      localBest.difference < bestDifference
-    ) {
-
-      bestBlob =
-        localBest.blob;
-
-      bestDifference =
-        localBest.difference;
-    }
-
-
-    // Target reached
-    if (
-      localBest &&
-      localBest.blob.size <= target
-    ) {
-
-      return {
-        blob: localBest.blob
-      };
-    }
-
-
-    // Reduce dimensions if still too large
-    scale *= 0.84;
   }
 
 
-  if (!bestBlob) {
+  return blob;
 
-    throw new Error(
-      "Compression failed."
-    );
-  }
-
-
-  return {
-    blob: bestBlob
-  };
 }
 
 
-// =========================
-// STATUS MESSAGE
-// =========================
-
-function setStatus(message, type) {
-
-  statusMessage.textContent =
-    message;
-
-  statusMessage.className =
-    "status-message";
-
-  if (type) {
-
-    statusMessage.classList.add(type);
-  }
-}
-
-
-// =========================
-// FORMAT BYTES
-// =========================
+/* =========================
+   HELPERS
+========================= */
 
 function formatBytes(bytes) {
 
   if (bytes < 1024) {
 
-    return `${bytes} B`;
+    return bytes + " B";
+
   }
+
 
   if (bytes < 1024 * 1024) {
 
-    return `${(bytes / 1024).toFixed(1)} KB`;
+    return (
+      (bytes / 1024).toFixed(1) +
+      " KB"
+    );
+
   }
 
-  return `${(
-    bytes /
-    (1024 * 1024)
-  ).toFixed(2)} MB`;
+
+  return (
+    (bytes / (1024 * 1024)).toFixed(2) +
+    " MB"
+  );
+
 }
 
 
-// =========================
-// FILE NAME
-// =========================
+function showError(message) {
 
-function getBaseName(filename) {
+  statusMessage.className =
+    "status-message error";
 
-  return filename
-    .replace(/\.[^/.]+$/, "")
-    .replace(/[^a-zA-Z0-9-_]/g, "-")
-    .substring(0, 60);
+  statusMessage.textContent =
+    message;
+
 }
 
 
-// =========================
-// INITIAL STATE
-// =========================
+function showSuccess(message) {
 
-// 50 KB selected by default
-targetButtons.forEach((button, index) => {
+  statusMessage.className =
+    "status-message success";
 
-  if (index === 0) {
+  statusMessage.textContent =
+    message;
 
-    button.classList.add("active");
-  }
-});
-
-compressButton.disabled = true;
+}
