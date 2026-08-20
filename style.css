@@ -1,490 +1,669 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>TargetKB – Image Compressor</title>
-
-  <meta
-    name="description"
-    content="Compress JPG, PNG and WebP images toward your target file size with TargetKB."
-  />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  />
-
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-
-  <!-- HEADER -->
-  <header class="site-header">
-    <div class="container header-inner">
-
-      <a class="brand" href="index.html">
-        <span class="brand-mark">TK</span>
-        <span>TargetKB</span>
-      </a>
-
-      <nav class="main-nav">
-        <a href="#compressor">Compressor</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#privacy">Privacy</a>
-      </nav>
-
-    </div>
-  </header>
-
-
-  <main>
-
-    <!-- HERO -->
-    <section class="hero-section">
-
-      <div class="container hero-content">
-
-        <div class="hero-copy">
-
-          <p class="eyebrow">
-            FAST · PRIVATE · SIMPLE
-          </p>
-
-          <h1>
-            Compress Images Toward Your Target Size
-          </h1>
-
-          <p class="hero-text">
-            Reduce JPG, PNG and WebP images toward 50KB, 100KB
-            or your own custom target size.
-          </p>
-
-          <a class="hero-link" href="#compressor">
-            Start Compressing
-            <span>↓</span>
-          </a>
-
-        </div>
-
-
-        <div class="hero-gauge">
-
-          <div class="gauge-ring">
-
-            <div class="gauge-center">
-              <span class="gauge-pct">KB</span>
-              <span class="gauge-caption">Target Size</span>
-            </div>
-
-          </div>
-
-          <div class="gauge-readout">
-            <span>IMAGE</span>
-            <span class="arrow">→</span>
-            <span class="after">TARGET</span>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- COMPRESSOR -->
-    <section id="compressor" class="compressor-section">
-
-      <div class="container">
-
-        <div class="tool-card">
-
-          <div class="tool-heading">
-
-            <p class="section-label">
-              IMAGE COMPRESSOR
-            </p>
-
-            <h2>
-              Compress your image
-            </h2>
-
-            <p>
-              JPG, PNG and WebP supported
-            </p>
-
-          </div>
-
-
-          <!-- UPLOAD -->
-          <label
-            id="dropZone"
-            class="upload-box"
-            for="imageInput"
-          >
-
-            <span class="upload-icon">
-              ↑
-            </span>
-
-            <span class="upload-title">
-              Drag & Drop your image here
-            </span>
-
-            <span class="upload-subtitle">
-              or choose a file from your device
-            </span>
-
-            <span class="choose-button">
-              Choose Image
-            </span>
-
-            <input
-              id="imageInput"
-              type="file"
-              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-              hidden
-            />
-
-          </label>
-
-
-          <p
-            id="fileMessage"
-            class="file-message"
-            aria-live="polite"
-          >
-            No image selected yet.
-          </p>
-
-
-          <!-- TARGET SIZE -->
-          <div class="options-section">
-
-            <h3>
-              Choose target size
-            </h3>
-
-            <div
-              class="target-buttons"
-              role="group"
-              aria-label="Target image size"
-            >
-
-              <button
-                class="target-button active"
-                type="button"
-                data-target="51200"
-              >
-                50 KB
-              </button>
-
-              <button
-                class="target-button"
-                type="button"
-                data-target="102400"
-              >
-                100 KB
-              </button>
-
-              <button
-                class="target-button"
-                type="button"
-                data-target="custom"
-              >
-                Custom
-              </button>
-
-            </div>
-
-
-            <!-- CUSTOM SIZE -->
-            <div
-              id="customSizeBox"
-              class="custom-size-box"
-              hidden
-            >
-
-              <label for="customSize">
-                Target size
-              </label>
-
-              <div class="custom-input-row">
-
-                <input
-                  id="customSize"
-                  type="number"
-                  min="2"
-                  max="5000"
-                  placeholder="75"
-                  inputmode="numeric"
-                />
-
-                <span>KB</span>
-
-              </div>
-
-              <p>
-                Enter a target between 2 KB and 5000 KB.
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <p class="quality-note">
-            ✨ Best quality possible while reducing file size.
-          </p>
-
-
-          <!-- COMPRESS -->
-          <button
-            id="compressButton"
-            class="compress-button"
-            type="button"
-            disabled
-          >
-            Compress Image
-          </button>
-
-
-          <p
-            id="statusMessage"
-            class="status-message"
-            aria-live="polite"
-          ></p>
-
-        </div>
-
-
-        <!-- RESULT -->
-        <section
-          id="resultSection"
-          class="result-section"
-          hidden
-        >
-
-          <div class="result-heading">
-
-            <p class="section-label">
-              COMPRESSION RESULT
-            </p>
-
-            <h2>
-              Before and after
-            </h2>
-
-          </div>
-
-
-          <div class="comparison-grid">
-
-            <article class="preview-card">
-
-              <h3>
-                Original Image
-              </h3>
-
-              <div class="image-preview">
-                <img
-                  id="originalPreview"
-                  src=""
-                  alt="Original image preview"
-                />
-              </div>
-
-              <p id="originalInfo">
-                Original file
-              </p>
-
-            </article>
-
-
-            <article class="preview-card">
-
-              <h3>
-                Compressed Image
-              </h3>
-
-              <div class="image-preview">
-                <img
-                  id="compressedPreview"
-                  src=""
-                  alt="Compressed image preview"
-                />
-              </div>
-
-              <p id="compressedInfo">
-                Compressed file
-              </p>
-
-            </article>
-
-          </div>
-
-
-          <div class="result-summary">
-
-            <p>
-              Size saved:
-              <strong id="savedPercentage">
-                0%
-              </strong>
-            </p>
-
-            <p id="qualityMessage">
-              Your result is ready.
-            </p>
-
-          </div>
-
-
-          <a
-            id="downloadButton"
-            class="download-button"
-            href="#"
-            download="targetkb-compressed.jpg"
-          >
-            Download Compressed Image
-          </a>
-
-        </section>
-
-      </div>
-
-    </section>
-
-
-    <!-- HOW IT WORKS -->
-    <section id="how-it-works" class="info-section">
-
-      <div class="container">
-
-        <p class="section-label">
-          HOW IT WORKS
-        </p>
-
-        <div class="info-grid">
-
-          <article class="info-card">
-
-            <span class="info-number">
-              01
-            </span>
-
-            <h2>
-              Upload
-            </h2>
-
-            <p>
-              Select a JPG, PNG or WebP image.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <span class="info-number">
-              02
-            </span>
-
-            <h2>
-              Choose Size
-            </h2>
-
-            <p>
-              Select 50 KB, 100 KB or enter your own target.
-            </p>
-
-          </article>
-
-
-          <article class="info-card">
-
-            <span class="info-number">
-              03
-            </span>
-
-            <h2>
-              Download
-            </h2>
-
-            <p>
-              Compare your image and download the result.
-            </p>
-
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- PRIVACY -->
-    <section id="privacy" class="privacy-section">
-
-      <div class="container privacy-box">
-
-        <p class="section-label">
-          PRIVACY FIRST
-        </p>
-
-        <h2>
-          Your images stay in your browser
-        </h2>
-
-        <p>
-          Compression happens directly on your device.
-          Your images are not uploaded to our server.
-        </p>
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- FOOTER -->
-  <footer class="site-footer">
-
-    <div class="container footer-inner">
-
-      <p>
-        © 2026 TargetKB. All rights reserved.
-      </p>
-
-      <div class="footer-links">
-
-        <a href="#privacy">
-          Privacy
-        </a>
-
-        <a href="#">
-          Terms
-        </a>
-
-        <a href="#">
-          Contact
-        </a>
-
-      </div>
-
-    </div>
-
-  </footer>
-
-
-  <script src="script.js"></script>
-
-</body>
-</html>
+:root {
+  --bg: #eef0f2;
+  --bg-alt: #e3e6ea;
+  --card: #ffffff;
+  --ink: #12151a;
+  --ink-soft: #5b6270;
+  --ink-faint: #9aa1ac;
+  --border: #d8dce1;
+  --accent: #2f6fed;
+  --accent-dark: #1f52c2;
+  --accent-soft: rgba(47,111,237,.08);
+  --good: #12885f;
+  --bad: #c23b3b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", Arial, sans-serif;
+  background: #eef0f2;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: 1050px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+
+/* HEADER */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(238,240,242,.9);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}
+
+.header-inner {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: white;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.main-nav {
+  display: flex;
+  gap: 25px;
+}
+
+.main-nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* HERO */
+
+.hero-section {
+  padding: 70px 0 60px;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  align-items: center;
+  gap: 50px;
+}
+
+.eyebrow,
+.section-label {
+  color: var(--accent-dark);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.eyebrow {
+  margin-bottom: 18px;
+}
+
+.hero-section h1 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(36px,5vw,54px);
+  line-height: 1.06;
+  letter-spacing: -1.5px;
+}
+
+.hero-text {
+  max-width: 500px;
+  margin-top: 20px;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+
+.hero-link {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 13px 22px;
+  background: var(--ink);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+
+/* GAUGE */
+
+.hero-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 30px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+
+.gauge-ring {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--accent) 82%,
+    var(--bg-alt) 0
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-center {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-pct {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.gauge-caption {
+  color: var(--ink-faint);
+  font-size: 11px;
+}
+
+.gauge-readout {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.before {
+  color: var(--ink-faint);
+  text-decoration: line-through;
+}
+
+.after {
+  color: var(--good);
+}
+
+
+/* COMPRESSOR */
+
+.compressor-section {
+  padding-bottom: 70px;
+}
+
+.tool-card {
+  max-width: 760px;
+  margin: auto;
+  padding: 34px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.tool-heading {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.tool-heading h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 25px;
+}
+
+.tool-heading p:last-child {
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+
+/* UPLOAD */
+
+.upload-box {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  background: var(--bg-alt);
+  cursor: pointer;
+  text-align: center;
+}
+
+.upload-box.dragging,
+.upload-box:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.upload-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-size: 22px;
+}
+
+.upload-title {
+  font-weight: 700;
+}
+
+.upload-subtitle {
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+
+.choose-button {
+  margin-top: 16px;
+  padding: 10px 18px;
+  background: var(--ink);
+  color: white;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.file-message {
+  min-height: 22px;
+  margin-top: 12px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+}
+
+
+/* TARGET */
+
+.options-section {
+  margin-top: 28px;
+}
+
+.options-section h3 {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.target-buttons {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+  padding: 4px;
+  background: var(--bg-alt);
+  border-radius: 11px;
+}
+
+.target-button {
+  min-height: 44px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.target-button.active {
+  background: var(--ink);
+  color: white;
+}
+
+
+/* CUSTOM */
+
+.custom-box {
+  display: none;
+  margin-top: 14px;
+}
+
+.custom-box.show {
+  display: block;
+}
+
+.custom-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.custom-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.custom-input input {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  outline: none;
+}
+
+.custom-input span {
+  padding: 0 14px;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.quality-note {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+
+/* BUTTON */
+
+.compress-button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  border: none;
+  border-radius: 9px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.compress-button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.status-message {
+  min-height: 22px;
+  margin-top: 12px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.status-message.error {
+  color: var(--bad);
+}
+
+.status-message.success {
+  color: var(--good);
+}
+
+
+/* RESULT */
+
+.result-section {
+  max-width: 1050px;
+  margin: 30px auto 0;
+  padding: 30px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.result-heading {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.result-heading h2 {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 16px;
+}
+
+.preview-card {
+  padding: 18px;
+  background: var(--bg-alt);
+  border-radius: 12px;
+}
+
+.preview-card h3 {
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.image-preview {
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #f5f6f8;
+  border-radius: 8px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 360px;
+}
+
+.preview-card p {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.result-summary {
+  margin-top: 18px;
+  padding: 18px;
+  background: rgba(18,136,95,.1);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.result-summary strong {
+  color: var(--good);
+}
+
+#qualityMessage {
+  margin-top: 5px;
+}
+
+.download-button {
+  display: block;
+  margin-top: 18px;
+  padding: 15px;
+  background: var(--ink);
+  color: white;
+  border-radius: 9px;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+
+/* HOW IT WORKS */
+
+.info-section {
+  padding: 30px 0 80px;
+}
+
+.info-section > .container > .section-label {
+  display: block;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+
+.info-card {
+  text-align: center;
+}
+
+.info-number {
+  width: 44px;
+  height: 44px;
+  margin: auto auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.info-card h2 {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.info-card p {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+
+/* PRIVACY */
+
+.privacy-section {
+  padding-bottom: 80px;
+}
+
+.privacy-box {
+  padding: 34px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.privacy-box h2 {
+  margin: 8px 0;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.privacy-box p:last-child {
+  max-width: 650px;
+  margin: auto;
+  color: var(--ink-soft);
+}
+
+
+/* FOOTER */
+
+.site-footer {
+  padding: 28px 0 40px;
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+}
+
+.site-footer p,
+.footer-links a {
+  color: var(--ink-faint);
+  font-size: 12px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 18px;
+}
+
+.footer-links a {
+  text-decoration: none;
+}
+
+
+/* MOBILE */
+
+@media(max-width:780px) {
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-text {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+}
+
+@media(max-width:700px) {
+
+  .main-nav {
+    gap: 10px;
+  }
+
+  .main-nav a {
+    font-size: 11px;
+  }
+
+  .tool-card {
+    padding: 22px 16px;
+  }
+
+  .comparison-grid,
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+}
+
+@media(max-width:480px) {
+
+  .container {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .target-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    padding: 50px 0;
+  }
+
+  }
