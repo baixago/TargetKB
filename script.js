@@ -169,8 +169,7 @@ changeImageButton.addEventListener("click", function(event) {
 
     event.preventDefault();
 
-    uploadBox.style.borderColor = "#2f6fed";
-    uploadBox.style.background = "#f0f5ff";
+    uploadBox.classList.add("drag-active");
 
   });
 
@@ -183,8 +182,7 @@ changeImageButton.addEventListener("click", function(event) {
 
     event.preventDefault();
 
-    uploadBox.style.borderColor = "";
-    uploadBox.style.background = "";
+    uploadBox.classList.remove("drag-active");
 
   });
 
@@ -283,8 +281,20 @@ compressButton.addEventListener("click", async function() {
 
     if (blob.size <= targetSize) {
 
-      qualityMessage.textContent =
-        "Target size reached while preserving the best practical quality.";
+      const gapPercent =
+        ((targetSize - blob.size) / targetSize) * 100;
+
+      if (gapPercent <= 15) {
+
+        qualityMessage.textContent =
+          "Landed right at your target size, at the best quality possible.";
+
+      } else {
+
+        qualityMessage.textContent =
+          "Target size reached. The image compressed further than requested because that was the closest quality step available.";
+
+      }
 
     } else {
 
@@ -409,6 +419,59 @@ function canvasToBlob(canvas, quality) {
 
 
 /* =========================
+   FIND BEST QUALITY AT A GIVEN RESOLUTION
+   Binary search converges tightly on the
+   largest blob that is still <= target,
+   instead of stepping down in coarse jumps.
+========================================= */
+
+async function findBestQualityForTarget(canvas, target) {
+
+  let low = 0.05;
+  let high = 0.95;
+
+  /*
+    If even the lowest quality is still
+    above target, this resolution cannot
+    reach the target — the caller should
+    shrink the canvas and try again.
+  */
+
+  const lowestBlob =
+    await canvasToBlob(canvas, low);
+
+  if (lowestBlob.size > target) {
+    return null;
+  }
+
+  let bestBlob = lowestBlob;
+
+  for (let i = 0; i < 10; i++) {
+
+    const quality = (low + high) / 2;
+
+    const blob =
+      await canvasToBlob(canvas, quality);
+
+    if (blob.size <= target) {
+
+      bestBlob = blob;
+      low = quality;
+
+    } else {
+
+      high = quality;
+
+    }
+
+  }
+
+  return bestBlob;
+
+}
+
+
+/* =========================
    COMPRESSION ENGINE
 ========================= */
 
@@ -418,35 +481,28 @@ async function compressImage(file, target) {
     await loadImage(file);
 
 
-  const canvas =
-    document.createElement("canvas");
-
-
-  const context =
-    canvas.getContext("2d");
-
-
   let scale = 1;
-  let quality = 0.88;
-  let blob = null;
 
 
-  canvas.width =
-    image.naturalWidth;
+  for (let resizeAttempt = 0; resizeAttempt < 8; resizeAttempt++) {
 
-  canvas.height =
-    image.naturalHeight;
+    const canvas =
+      document.createElement("canvas");
 
+    canvas.width =
+      Math.max(
+        60,
+        Math.round(image.naturalWidth * scale)
+      );
 
-  for (let attempt = 0; attempt < 25; attempt++) {
+    canvas.height =
+      Math.max(
+        60,
+        Math.round(image.naturalHeight * scale)
+      );
 
-    context.clearRect(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
+    const context =
+      canvas.getContext("2d");
 
     context.drawImage(
       image,
@@ -457,55 +513,63 @@ async function compressImage(file, target) {
     );
 
 
-    blob =
-      await canvasToBlob(
+    const found =
+      await findBestQualityForTarget(
         canvas,
-        quality
+        target
       );
 
-
-    if (blob.size <= target) {
-
-      return blob;
-
+    if (found) {
+      return found;
     }
 
 
-    if (quality > 0.35) {
+    /*
+      Even the lowest JPEG quality at this
+      resolution is still above target —
+      shrink the canvas and try the binary
+      search again at a smaller size.
+    */
 
-      quality -= 0.055;
-
-    } else {
-
-      scale *= 0.86;
-
-
-      canvas.width =
-        Math.max(
-          250,
-          Math.round(
-            image.naturalWidth * scale
-          )
-        );
-
-
-      canvas.height =
-        Math.max(
-          250,
-          Math.round(
-            image.naturalHeight * scale
-          )
-        );
-
-
-      quality = 0.78;
-
-    }
+    scale *= 0.82;
 
   }
 
 
-  return blob;
+  /*
+    Fallback if 8 shrink attempts were not
+    enough (extremely small target size).
+    Return the smallest, lowest quality
+    version so the user still gets a file.
+  */
+
+  const fallbackCanvas =
+    document.createElement("canvas");
+
+  fallbackCanvas.width =
+    Math.max(
+      40,
+      Math.round(image.naturalWidth * scale)
+    );
+
+  fallbackCanvas.height =
+    Math.max(
+      40,
+      Math.round(image.naturalHeight * scale)
+    );
+
+  const fallbackContext =
+    fallbackCanvas.getContext("2d");
+
+  fallbackContext.drawImage(
+    image,
+    0,
+    0,
+    fallbackCanvas.width,
+    fallbackCanvas.height
+  );
+
+  return await canvasToBlob(fallbackCanvas, 0.4);
 
 }
 
