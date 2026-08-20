@@ -1,415 +1,544 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>TargetKB – Image Compressor</title>
 
   <meta
     name="description"
     content="Compress JPG, PNG and WebP images toward your target file size with TargetKB."
-  >
+  />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
     rel="stylesheet"
-  >
+  />
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<header class="site-header">
-  <div class="container header-inner">
+  <!-- =========================
+       HEADER
+  ========================== -->
 
-    <a href="#" class="brand" aria-label="TargetKB Home">
-      <span class="brand-mark">TK</span>
-      <span>TargetKB</span>
-    </a>
+  <header class="site-header">
+    <div class="container header-inner">
 
-    <nav class="main-nav" aria-label="Main navigation">
-      <a href="#compressor">Compressor</a>
-      <a href="#how-it-works">How It Works</a>
-      <a href="#privacy">Privacy</a>
-    </nav>
+      <a
+        class="brand"
+        href="index.html"
+        aria-label="TargetKB homepage"
+      >
+        <span class="brand-mark">TK</span>
+        <span>TargetKB</span>
+      </a>
 
-  </div>
-</header>
-
-
-<main>
-
-  <!-- HERO -->
-
-  <section class="hero-section">
-
-    <div class="container hero-content">
-
-      <div class="hero-copy">
-
-        <p class="eyebrow">FAST · PRIVATE · SIMPLE</p>
-
-        <h1>
-          Compress Images Toward Your Target Size
-        </h1>
-
-        <p class="hero-text">
-          Reduce JPG, PNG and WebP images toward 50 KB,
-          100 KB or your own custom target size.
-        </p>
-
-        <a href="#compressor" class="hero-link">
-          Start Compressing
-          <span aria-hidden="true">↓</span>
-        </a>
-
-      </div>
-
-
-      <div class="hero-card" aria-hidden="true">
-
-        <div class="hero-icon">KB</div>
-
-        <div class="hero-example">
-          <span>1.8 MB</span>
-          <span class="arrow">→</span>
-          <strong>100 KB</strong>
-        </div>
-
-        <p>Choose your target. Compress in your browser.</p>
-
-      </div>
+      <nav
+        class="main-nav"
+        aria-label="Main navigation"
+      >
+        <a href="#compressor">Compressor</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#privacy">Privacy</a>
+      </nav>
 
     </div>
+  </header>
 
-  </section>
 
+  <main>
 
-  <!-- COMPRESSOR -->
+    <!-- =========================
+         HERO
+    ========================== -->
 
-  <section id="compressor" class="compressor-section">
+    <section class="hero-section">
 
-    <div class="container">
+      <div class="container hero-content">
 
-      <div class="tool-card">
+        <div class="hero-copy">
 
-        <div class="tool-heading">
-
-          <p class="section-label">IMAGE COMPRESSOR</p>
-
-          <h2>Choose an image to begin</h2>
-
-          <p>
-            JPG, PNG and WebP supported
+          <p class="eyebrow">
+            FAST · PRIVATE · TARGET SIZE
           </p>
+
+          <h1>
+            Compress Images Toward Your Target Size
+          </h1>
+
+          <p class="hero-text">
+            Reduce JPG, PNG and WebP images toward 50 KB,
+            100 KB or your own custom target size.
+            Everything is designed for a simple and fast experience.
+          </p>
+
+          <a
+            class="hero-link"
+            href="#compressor"
+          >
+            Start Compressing
+            <span aria-hidden="true">↓</span>
+          </a>
 
         </div>
 
 
-        <!-- UPLOAD -->
+        <!-- HERO VISUAL -->
 
-        <label
-          class="upload-box"
-          id="dropZone"
-          for="imageInput"
+        <div
+          class="hero-gauge"
+          aria-hidden="true"
         >
-
-          <span class="upload-icon" aria-hidden="true">↑</span>
-
-          <span class="upload-title">
-            Drag & drop your image here
-          </span>
-
-          <span class="upload-subtitle">
-            or choose a file from your device
-          </span>
-
-          <span class="choose-button">
-            Choose Image
-          </span>
-
-          <input
-            id="imageInput"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            hidden
-          >
-
-        </label>
-
-
-        <p
-          id="fileMessage"
-          class="file-message"
-          aria-live="polite"
-        >
-          No image selected yet.
-        </p>
-
-
-        <!-- TARGET SIZE -->
-
-        <div class="options-section">
-
-          <h3>Choose target size</h3>
 
           <div
-            class="target-buttons"
-            role="group"
-            aria-label="Target image size"
+            class="gauge-ring"
+            style="--pct: 82"
           >
 
-            <button
-              class="target-button active"
-              type="button"
-              data-target="51200"
-            >
-              50 KB
-            </button>
+            <div class="gauge-center">
 
-            <button
-              class="target-button"
-              type="button"
-              data-target="102400"
-            >
-              100 KB
-            </button>
+              <span class="gauge-pct">
+                82%
+              </span>
 
-            <button
-              class="target-button"
-              type="button"
-              data-target="custom"
-            >
-              Custom
-            </button>
+              <span class="gauge-caption">
+                smaller
+              </span>
+
+            </div>
 
           </div>
 
 
-          <!-- CUSTOM TARGET -->
+          <div class="gauge-readout">
 
-          <div
-            id="customTargetBox"
-            class="custom-target-box"
-            hidden
-          >
+            <span class="before">
+              1.8 MB
+            </span>
 
-            <label for="customTarget">
-              Target size
-            </label>
+            <span class="arrow">
+              →
+            </span>
 
-            <div class="custom-input-row">
+            <span class="after">
+              48 KB
+            </span>
 
-              <input
-                id="customTarget"
-                type="number"
-                min="2"
-                step="1"
-                placeholder="75"
-                inputmode="numeric"
-              >
+          </div>
 
-              <span>KB</span>
+        </div>
 
-            </div>
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         COMPRESSOR
+    ========================== -->
+
+    <section
+      id="compressor"
+      class="compressor-section"
+    >
+
+      <div class="container">
+
+        <div class="tool-card">
+
+          <!-- TOOL HEADING -->
+
+          <div class="tool-heading">
+
+            <p class="section-label">
+              IMAGE COMPRESSOR
+            </p>
+
+            <h2>
+              Choose an image to begin
+            </h2>
 
             <p>
-              Enter a target size between 2 KB and 2048 KB.
+              Supported formats: JPG, PNG and WebP
             </p>
 
           </div>
 
+
+          <!-- =========================
+               UPLOAD
+          ========================== -->
+
+          <label
+            class="upload-box"
+            for="imageInput"
+          >
+
+            <span
+              class="upload-icon"
+              aria-hidden="true"
+            >
+              ↑
+            </span>
+
+            <span class="upload-title">
+              Drag & drop your image here
+            </span>
+
+            <span class="upload-subtitle">
+              or choose a file from your device
+            </span>
+
+            <span class="choose-button">
+              Choose Image
+            </span>
+
+            <input
+              id="imageInput"
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              hidden
+            />
+
+          </label>
+
+
+          <p
+            id="fileMessage"
+            class="file-message"
+            aria-live="polite"
+          >
+            No image selected yet.
+          </p>
+
+
+          <!-- =========================
+               TARGET SIZE
+          ========================== -->
+
+          <div class="options-section">
+
+            <h3>
+              Choose target size
+            </h3>
+
+
+            <div
+              class="target-buttons"
+              role="group"
+              aria-label="Target image size"
+            >
+
+              <button
+                class="target-button active"
+                type="button"
+                data-target="51200"
+              >
+                50 KB
+              </button>
+
+
+              <button
+                class="target-button"
+                type="button"
+                data-target="102400"
+              >
+                100 KB
+              </button>
+
+
+              <button
+                class="target-button"
+                type="button"
+                data-target="custom"
+              >
+                Custom
+              </button>
+
+            </div>
+
+
+            <!-- CUSTOM SIZE INPUT -->
+
+            <div
+              id="customTargetBox"
+              class="custom-target-box"
+              hidden
+            >
+
+              <label
+                for="customTargetInput"
+              >
+                Target size
+              </label>
+
+
+              <div class="custom-input-row">
+
+                <input
+                  id="customTargetInput"
+                  type="number"
+                  min="10"
+                  max="10240"
+                  step="1"
+                  placeholder="75"
+                  inputmode="numeric"
+                />
+
+                <span>
+                  KB
+                </span>
+
+              </div>
+
+
+              <p>
+                Enter your target size in KB.
+              </p>
+
+            </div>
+
+
+            <!-- QUALITY NOTE -->
+
+            <p class="quality-note">
+              ✨ Best quality possible
+            </p>
+
+          </div>
+
+
+          <!-- =========================
+               COMPRESS BUTTON
+          ========================== -->
+
+          <button
+            id="compressButton"
+            class="compress-button"
+            type="button"
+            disabled
+          >
+            Compress Image
+          </button>
+
+
+          <p
+            id="statusMessage"
+            class="status-message"
+            aria-live="polite"
+          ></p>
+
         </div>
 
 
-        <!-- QUALITY NOTE -->
+        <!-- =========================
+             RESULT
+        ========================== -->
 
-        <p class="quality-note">
-          ✨ Best quality possible while working toward your target size.
+        <section
+          id="resultSection"
+          class="result-section"
+          hidden
+        >
+
+          <div class="result-heading">
+
+            <p class="section-label">
+              COMPRESSION RESULT
+            </p>
+
+            <h2>
+              Before and after
+            </h2>
+
+          </div>
+
+
+          <div class="comparison-grid">
+
+            <!-- ORIGINAL -->
+
+            <article class="preview-card">
+
+              <h3>
+                Original Image
+              </h3>
+
+              <div class="image-preview">
+
+                <img
+                  id="originalPreview"
+                  src=""
+                  alt="Original image preview"
+                />
+
+              </div>
+
+              <p id="originalInfo">
+                Original file information
+              </p>
+
+            </article>
+
+
+            <!-- COMPRESSED -->
+
+            <article class="preview-card">
+
+              <h3>
+                Compressed Image
+              </h3>
+
+              <div class="image-preview">
+
+                <img
+                  id="compressedPreview"
+                  src=""
+                  alt="Compressed image preview"
+                />
+
+              </div>
+
+              <p id="compressedInfo">
+                Compressed file information
+              </p>
+
+            </article>
+
+          </div>
+
+
+          <!-- RESULT SUMMARY -->
+
+          <div class="result-summary">
+
+            <p>
+              Size saved:
+              <strong id="savedPercentage">
+                0%
+              </strong>
+            </p>
+
+            <p id="qualityMessage">
+              Your compressed image will appear here.
+            </p>
+
+          </div>
+
+
+          <!-- DOWNLOAD -->
+
+          <a
+            id="downloadButton"
+            class="download-button"
+            href="#"
+            download
+          >
+            Download Compressed Image
+          </a>
+
+        </section>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         HOW IT WORKS
+    ========================== -->
+
+    <section
+      id="how-it-works"
+      class="info-section"
+    >
+
+      <div class="container">
+
+        <p class="section-label">
+          HOW IT WORKS
         </p>
 
 
-        <!-- COMPRESS -->
+        <div class="info-grid">
 
-        <button
-          id="compressButton"
-          class="compress-button"
-          type="button"
-          disabled
-        >
-          Compress Image
-        </button>
+          <article class="info-card">
 
+            <span class="info-number">
+              01
+            </span>
 
-        <p
-          id="statusMessage"
-          class="status-message"
-          aria-live="polite"
-        ></p>
+            <h2>
+              Upload
+            </h2>
 
-      </div>
-
-
-      <!-- RESULT -->
-
-      <section
-        id="resultSection"
-        class="result-section"
-        hidden
-      >
-
-        <div class="result-heading">
-
-          <p class="section-label">
-            COMPRESSION RESULT
-          </p>
-
-          <h2>Before and after</h2>
-
-        </div>
-
-
-        <div class="comparison-grid">
-
-          <article class="preview-card">
-
-            <h3>Original Image</h3>
-
-            <div class="image-preview">
-              <img
-                id="originalPreview"
-                src=""
-                alt="Original image preview"
-              >
-            </div>
-
-            <p id="originalInfo">
-              Original file information
+            <p>
+              Select a JPG, PNG or WebP image
+              from your phone or computer.
             </p>
 
           </article>
 
 
-          <article class="preview-card">
+          <article class="info-card">
 
-            <h3>Compressed Image</h3>
+            <span class="info-number">
+              02
+            </span>
 
-            <div class="image-preview">
-              <img
-                id="compressedPreview"
-                src=""
-                alt="Compressed image preview"
-              >
-            </div>
+            <h2>
+              Choose Size
+            </h2>
 
-            <p id="compressedInfo">
-              Compressed file information
+            <p>
+              Select 50 KB, 100 KB or enter
+              your own custom target size.
+            </p>
+
+          </article>
+
+
+          <article class="info-card">
+
+            <span class="info-number">
+              03
+            </span>
+
+            <h2>
+              Download
+            </h2>
+
+            <p>
+              Compare the result and download
+              your compressed image.
             </p>
 
           </article>
 
         </div>
 
-
-        <div class="result-summary">
-
-          <p>
-            Size saved:
-            <strong id="savedPercentage">0%</strong>
-          </p>
-
-          <p id="qualityMessage">
-            Your compressed image will appear here.
-          </p>
-
-        </div>
-
-
-        <a
-          id="downloadButton"
-          class="download-button"
-          href="#"
-          download
-        >
-          Download Compressed Image
-        </a>
-
-      </section>
-
-    </div>
-
-  </section>
-
-
-  <!-- HOW IT WORKS -->
-
-  <section id="how-it-works" class="info-section">
-
-    <div class="container">
-
-      <p class="section-label center">
-        HOW IT WORKS
-      </p>
-
-      <div class="info-grid">
-
-        <article class="info-card">
-
-          <span class="info-number">01</span>
-
-          <h2>Upload</h2>
-
-          <p>
-            Select a JPG, PNG or WebP image.
-          </p>
-
-        </article>
-
-
-        <article class="info-card">
-
-          <span class="info-number">02</span>
-
-          <h2>Choose Size</h2>
-
-          <p>
-            Select 50 KB, 100 KB or enter your own target.
-          </p>
-
-        </article>
-
-
-        <article class="info-card">
-
-          <span class="info-number">03</span>
-
-          <h2>Download</h2>
-
-          <p>
-            Preview and download your compressed image.
-          </p>
-
-        </article>
-
       </div>
 
-    </div>
-
-  </section>
+    </section>
 
 
-  <!-- PRIVACY -->
+    <!-- =========================
+         PRIVACY
+    ========================== -->
 
-  <section id="privacy" class="privacy-section">
+    <section
+      id="privacy"
+      class="privacy-section"
+    >
 
-    <div class="container">
-
-      <div class="privacy-box">
+      <div class="container privacy-box">
 
         <p class="section-label">
           PRIVACY FIRST
@@ -420,44 +549,56 @@
         </h2>
 
         <p>
-          TargetKB processes images directly in your browser.
-          Your selected image is not uploaded to a TargetKB server
-          during compression.
+          Compression runs entirely on your device
+          using the browser's canvas API.
+          Your image is not uploaded to a server
+          by TargetKB.
         </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer class="site-footer">
+
+    <div class="container footer-inner">
+
+      <p>
+        © 2026 TargetKB. All rights reserved.
+      </p>
+
+
+      <div class="footer-links">
+
+        <a href="#privacy">
+          Privacy
+        </a>
+
+        <a href="#">
+          Terms
+        </a>
+
+        <a href="#">
+          Contact
+        </a>
 
       </div>
 
     </div>
 
-  </section>
-
-</main>
+  </footer>
 
 
-<!-- FOOTER -->
+  <!-- JAVASCRIPT -->
 
-<footer class="site-footer">
-
-  <div class="container footer-inner">
-
-    <p>
-      © 2026 TargetKB. All rights reserved.
-    </p>
-
-    <div class="footer-links">
-
-      <a href="#privacy">Privacy</a>
-      <a href="#">Terms</a>
-      <a href="#">Contact</a>
-
-    </div>
-
-  </div>
-
-</footer>
-
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
-          </html>
+  </html>
