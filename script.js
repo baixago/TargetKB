@@ -1,199 +1,490 @@
-const imageInput = document.getElementById("imageInput");
-const dropZone = document.getElementById("dropZone");
-const fileName = document.getElementById("fileName");
-const compressBtn = document.getElementById("compressBtn");
-const result = document.getElementById("result");
-const preview = document.getElementById("preview");
-const resultText = document.getElementById("resultText");
-const downloadBtn = document.getElementById("downloadBtn");
-const sizeButtons = document.querySelectorAll(".size-button");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-let selectedFile = null;
-let targetSize = 51200;
-let currentUrl = null;
+  <title>TargetKB – Image Compressor</title>
 
-sizeButtons.forEach(function(button) {
-  button.addEventListener("click", function() {
-    sizeButtons.forEach(function(item) {
-      item.classList.remove("active");
-    });
+  <meta
+    name="description"
+    content="Compress JPG, PNG and WebP images toward your target file size with TargetKB."
+  />
 
-    button.classList.add("active");
-    targetSize = Number(button.dataset.size);
-  });
-});
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-imageInput.addEventListener("change", function(event) {
-  selectFile(event.target.files[0]);
-});
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  />
 
-["dragenter", "dragover"].forEach(function(eventName) {
-  dropZone.addEventListener(eventName, function(event) {
-    event.preventDefault();
-    dropZone.classList.add("dragging");
-  });
-});
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-["dragleave", "drop"].forEach(function(eventName) {
-  dropZone.addEventListener(eventName, function(event) {
-    event.preventDefault();
-    dropZone.classList.remove("dragging");
-  });
-});
+<body>
 
-dropZone.addEventListener("drop", function(event) {
-  selectFile(event.dataTransfer.files[0]);
-});
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
 
-function selectFile(file) {
-  if (!file || !file.type.startsWith("image/")) {
-    alert("Please select a JPG, PNG or WebP image.");
-    return;
-  }
+      <a class="brand" href="index.html">
+        <span class="brand-mark">TK</span>
+        <span>TargetKB</span>
+      </a>
 
-  selectedFile = file;
-  fileName.textContent =
-    file.name + " • " + formatBytes(file.size);
+      <nav class="main-nav">
+        <a href="#compressor">Compressor</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#privacy">Privacy</a>
+      </nav>
 
-  result.style.display = "none";
-}
+    </div>
+  </header>
 
-compressBtn.addEventListener("click", async function() {
-  if (!selectedFile) {
-    alert("Please choose an image first.");
-    return;
-  }
 
-  compressBtn.disabled = true;
-  compressBtn.textContent = "Compressing...";
+  <main>
 
-  try {
-    const blob = await compressImage(selectedFile, targetSize);
+    <!-- HERO -->
+    <section class="hero-section">
 
-    if (currentUrl) {
-      URL.revokeObjectURL(currentUrl);
-    }
+      <div class="container hero-content">
 
-    currentUrl = URL.createObjectURL(blob);
-    preview.src = currentUrl;
+        <div class="hero-copy">
 
-    const saved = Math.max(
-      0,
-      Math.round((1 - blob.size / selectedFile.size) * 100)
-    );
+          <p class="eyebrow">
+            FAST · PRIVATE · SIMPLE
+          </p>
 
-    resultText.textContent =
-      "Original: " + formatBytes(selectedFile.size) +
-      " • Compressed: " + formatBytes(blob.size) +
-      " • Saved: " + saved + "%";
+          <h1>
+            Compress Images Toward Your Target Size
+          </h1>
 
-    downloadBtn.href = currentUrl;
-    downloadBtn.download = "targetkb-compressed.jpg";
-    result.style.display = "block";
-  } catch (error) {
-    alert("Compression failed. Please try another image.");
-  }
+          <p class="hero-text">
+            Reduce JPG, PNG and WebP images toward 50KB, 100KB
+            or your own custom target size.
+          </p>
 
-  compressBtn.disabled = false;
-  compressBtn.textContent = "Compress Image";
-});
+          <a class="hero-link" href="#compressor">
+            Start Compressing
+            <span>↓</span>
+          </a>
 
-function loadImage(file) {
-  return new Promise(function(resolve, reject) {
-    const image = new Image();
-    const url = URL.createObjectURL(file);
+        </div>
 
-    image.onload = function() {
-      URL.revokeObjectURL(url);
-      resolve(image);
-    };
 
-    image.onerror = reject;
-    image.src = url;
-  });
-}
+        <div class="hero-gauge">
 
-function canvasToBlob(canvas, quality) {
-  return new Promise(function(resolve, reject) {
-    canvas.toBlob(
-      function(blob) {
-        if (blob) {
-          resolve(blob);
-        } else {
-          reject(new Error("Could not create image"));
-        }
-      },
-      "image/jpeg",
-      quality
-    );
-  });
-}
+          <div class="gauge-ring">
 
-async function compressImage(file, target) {
-  const image = await loadImage(file);
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
+            <div class="gauge-center">
+              <span class="gauge-pct">KB</span>
+              <span class="gauge-caption">Target Size</span>
+            </div>
 
-  let quality = 0.86;
-  let scale = 1;
-  let blob = null;
+          </div>
 
-  canvas.width = image.naturalWidth;
-  canvas.height = image.naturalHeight;
+          <div class="gauge-readout">
+            <span>IMAGE</span>
+            <span class="arrow">→</span>
+            <span class="after">TARGET</span>
+          </div>
 
-  context.drawImage(
-    image,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+        </div>
 
-  if (target === 0) {
-    return canvasToBlob(canvas, 0.92);
-  }
+      </div>
 
-  for (let attempt = 0; attempt < 18; attempt++) {
-    blob = await canvasToBlob(canvas, quality);
+    </section>
 
-    if (blob.size <= target) {
-      return blob;
-    }
 
-    if (quality > 0.35) {
-      quality -= 0.055;
-    } else {
-      scale *= 0.84;
+    <!-- COMPRESSOR -->
+    <section id="compressor" class="compressor-section">
 
-      canvas.width = Math.max(
-        300,
-        Math.round(image.naturalWidth * scale)
-      );
+      <div class="container">
 
-      canvas.height = Math.max(
-        300,
-        Math.round(image.naturalHeight * scale)
-      );
+        <div class="tool-card">
 
-      context.drawImage(
-        image,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+          <div class="tool-heading">
 
-      quality = 0.78;
-    }
-  }
+            <p class="section-label">
+              IMAGE COMPRESSOR
+            </p>
 
-  return blob;
-}
+            <h2>
+              Compress your image
+            </h2>
 
-function formatBytes(bytes) {
-  if (bytes < 1024) {
-    return bytes + " B";
-  }
+            <p>
+              JPG, PNG and WebP supported
+            </p>
 
-  return (bytes / 1024).toFixed(1) + " KB";
- }
+          </div>
+
+
+          <!-- UPLOAD -->
+          <label
+            id="dropZone"
+            class="upload-box"
+            for="imageInput"
+          >
+
+            <span class="upload-icon">
+              ↑
+            </span>
+
+            <span class="upload-title">
+              Drag & Drop your image here
+            </span>
+
+            <span class="upload-subtitle">
+              or choose a file from your device
+            </span>
+
+            <span class="choose-button">
+              Choose Image
+            </span>
+
+            <input
+              id="imageInput"
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+              hidden
+            />
+
+          </label>
+
+
+          <p
+            id="fileMessage"
+            class="file-message"
+            aria-live="polite"
+          >
+            No image selected yet.
+          </p>
+
+
+          <!-- TARGET SIZE -->
+          <div class="options-section">
+
+            <h3>
+              Choose target size
+            </h3>
+
+            <div
+              class="target-buttons"
+              role="group"
+              aria-label="Target image size"
+            >
+
+              <button
+                class="target-button active"
+                type="button"
+                data-target="51200"
+              >
+                50 KB
+              </button>
+
+              <button
+                class="target-button"
+                type="button"
+                data-target="102400"
+              >
+                100 KB
+              </button>
+
+              <button
+                class="target-button"
+                type="button"
+                data-target="custom"
+              >
+                Custom
+              </button>
+
+            </div>
+
+
+            <!-- CUSTOM SIZE -->
+            <div
+              id="customSizeBox"
+              class="custom-size-box"
+              hidden
+            >
+
+              <label for="customSize">
+                Target size
+              </label>
+
+              <div class="custom-input-row">
+
+                <input
+                  id="customSize"
+                  type="number"
+                  min="2"
+                  max="5000"
+                  placeholder="75"
+                  inputmode="numeric"
+                />
+
+                <span>KB</span>
+
+              </div>
+
+              <p>
+                Enter a target between 2 KB and 5000 KB.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <p class="quality-note">
+            ✨ Best quality possible while reducing file size.
+          </p>
+
+
+          <!-- COMPRESS -->
+          <button
+            id="compressButton"
+            class="compress-button"
+            type="button"
+            disabled
+          >
+            Compress Image
+          </button>
+
+
+          <p
+            id="statusMessage"
+            class="status-message"
+            aria-live="polite"
+          ></p>
+
+        </div>
+
+
+        <!-- RESULT -->
+        <section
+          id="resultSection"
+          class="result-section"
+          hidden
+        >
+
+          <div class="result-heading">
+
+            <p class="section-label">
+              COMPRESSION RESULT
+            </p>
+
+            <h2>
+              Before and after
+            </h2>
+
+          </div>
+
+
+          <div class="comparison-grid">
+
+            <article class="preview-card">
+
+              <h3>
+                Original Image
+              </h3>
+
+              <div class="image-preview">
+                <img
+                  id="originalPreview"
+                  src=""
+                  alt="Original image preview"
+                />
+              </div>
+
+              <p id="originalInfo">
+                Original file
+              </p>
+
+            </article>
+
+
+            <article class="preview-card">
+
+              <h3>
+                Compressed Image
+              </h3>
+
+              <div class="image-preview">
+                <img
+                  id="compressedPreview"
+                  src=""
+                  alt="Compressed image preview"
+                />
+              </div>
+
+              <p id="compressedInfo">
+                Compressed file
+              </p>
+
+            </article>
+
+          </div>
+
+
+          <div class="result-summary">
+
+            <p>
+              Size saved:
+              <strong id="savedPercentage">
+                0%
+              </strong>
+            </p>
+
+            <p id="qualityMessage">
+              Your result is ready.
+            </p>
+
+          </div>
+
+
+          <a
+            id="downloadButton"
+            class="download-button"
+            href="#"
+            download="targetkb-compressed.jpg"
+          >
+            Download Compressed Image
+          </a>
+
+        </section>
+
+      </div>
+
+    </section>
+
+
+    <!-- HOW IT WORKS -->
+    <section id="how-it-works" class="info-section">
+
+      <div class="container">
+
+        <p class="section-label">
+          HOW IT WORKS
+        </p>
+
+        <div class="info-grid">
+
+          <article class="info-card">
+
+            <span class="info-number">
+              01
+            </span>
+
+            <h2>
+              Upload
+            </h2>
+
+            <p>
+              Select a JPG, PNG or WebP image.
+            </p>
+
+          </article>
+
+
+          <article class="info-card">
+
+            <span class="info-number">
+              02
+            </span>
+
+            <h2>
+              Choose Size
+            </h2>
+
+            <p>
+              Select 50 KB, 100 KB or enter your own target.
+            </p>
+
+          </article>
+
+
+          <article class="info-card">
+
+            <span class="info-number">
+              03
+            </span>
+
+            <h2>
+              Download
+            </h2>
+
+            <p>
+              Compare your image and download the result.
+            </p>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PRIVACY -->
+    <section id="privacy" class="privacy-section">
+
+      <div class="container privacy-box">
+
+        <p class="section-label">
+          PRIVACY FIRST
+        </p>
+
+        <h2>
+          Your images stay in your browser
+        </h2>
+
+        <p>
+          Compression happens directly on your device.
+          Your images are not uploaded to our server.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <div class="container footer-inner">
+
+      <p>
+        © 2026 TargetKB. All rights reserved.
+      </p>
+
+      <div class="footer-links">
+
+        <a href="#privacy">
+          Privacy
+        </a>
+
+        <a href="#">
+          Terms
+        </a>
+
+        <a href="#">
+          Contact
+        </a>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
