@@ -1,67 +1,173 @@
 const imageInput = document.getElementById("imageInput");
 const uploadBox = document.querySelector(".upload-box");
 const fileMessage = document.getElementById("fileMessage");
+
 const compressButton = document.getElementById("compressButton");
 const statusMessage = document.getElementById("statusMessage");
+
+const targetButtons = document.querySelectorAll(".target-button");
 
 const resultSection = document.getElementById("resultSection");
 const originalPreview = document.getElementById("originalPreview");
 const compressedPreview = document.getElementById("compressedPreview");
+
 const originalInfo = document.getElementById("originalInfo");
 const compressedInfo = document.getElementById("compressedInfo");
+
 const savedPercentage = document.getElementById("savedPercentage");
 const qualityMessage = document.getElementById("qualityMessage");
+
 const downloadButton = document.getElementById("downloadButton");
 
-const targetButtons = document.querySelectorAll(".target-button");
-
 let selectedFile = null;
-let targetSize = 51200;
-let compressedUrl = null;
+let targetSize = 51200; // 50 KB
+let currentDownloadUrl = null;
 
 
-/* =========================
-   TARGET SIZE
-========================= */
+// =========================
+// TARGET BUTTONS
+// =========================
 
 targetButtons.forEach((button) => {
   button.addEventListener("click", () => {
+
     targetButtons.forEach((item) => {
       item.classList.remove("active");
     });
 
     button.classList.add("active");
 
-    targetSize = Number(button.dataset.target);
+    const target = button.dataset.target;
 
-    // Custom button will be handled separately later.
-    if (targetSize === 0) {
-      statusMessage.textContent =
-        "Best quality mode selected.";
-    } else {
-      statusMessage.textContent =
-        `Target size selected: ${formatBytes(targetSize)}`;
+    if (target === "custom") {
+      showCustomInput();
+      return;
     }
 
-    statusMessage.className = "status-message";
+    targetSize = Number(target);
+
+    hideCustomInput();
+
+    setStatus(
+      `Target size selected: ${formatBytes(targetSize)}`,
+      "success"
+    );
   });
 });
 
 
-/* =========================
-   FILE SELECT
-========================= */
+// =========================
+// CUSTOM INPUT
+// =========================
+
+function showCustomInput() {
+
+  let existing = document.getElementById("customTargetBox");
+
+  if (existing) {
+    existing.hidden = false;
+    existing.querySelector("input").focus();
+    return;
+  }
+
+  const box = document.createElement("div");
+
+  box.id = "customTargetBox";
+  box.className = "custom-target-box";
+
+  box.innerHTML = `
+    <label for="customTargetInput">
+      Enter target size
+    </label>
+
+    <div class="custom-target-row">
+      <input
+        id="customTargetInput"
+        type="number"
+        min="2"
+        max="50000"
+        step="1"
+        placeholder="75"
+        inputmode="numeric"
+      />
+
+      <span>KB</span>
+    </div>
+
+    <small>
+      Example: 75 KB, 150 KB, 250 KB or 500 KB
+    </small>
+
+    <p id="customError" class="custom-error"></p>
+  `;
+
+  const optionsSection = document.querySelector(".options-section");
+
+  optionsSection.appendChild(box);
+
+  const input = document.getElementById("customTargetInput");
+
+  input.addEventListener("input", () => {
+
+    const value = Number(input.value);
+    const error = document.getElementById("customError");
+
+    if (!value || value < 2) {
+
+      error.textContent = "Please enter at least 2 KB.";
+      targetSize = 0;
+      return;
+    }
+
+    if (value > 50000) {
+
+      error.textContent = "Maximum target size is 50,000 KB.";
+      targetSize = 0;
+      return;
+    }
+
+    error.textContent = "";
+
+    targetSize = Math.round(value * 1024);
+
+    setStatus(
+      `Custom target selected: ${value} KB`,
+      "success"
+    );
+  });
+
+  input.focus();
+}
+
+
+function hideCustomInput() {
+
+  const box = document.getElementById("customTargetBox");
+
+  if (box) {
+    box.hidden = true;
+  }
+}
+
+
+// =========================
+// IMAGE SELECT
+// =========================
 
 imageInput.addEventListener("change", (event) => {
+
   const file = event.target.files[0];
 
-  if (file) {
-    selectFile(file);
-  }
+  selectFile(file);
 });
 
 
 function selectFile(file) {
+
+  if (!file) {
+    return;
+  }
+
   const allowedTypes = [
     "image/jpeg",
     "image/png",
@@ -69,14 +175,11 @@ function selectFile(file) {
   ];
 
   if (!allowedTypes.includes(file.type)) {
-    fileMessage.textContent =
-      "Please choose a JPG, PNG or WebP image.";
 
-    statusMessage.textContent =
-      "Unsupported image format.";
-
-    statusMessage.className =
-      "status-message error";
+    setStatus(
+      "Please choose a JPG, PNG or WebP image.",
+      "error"
+    );
 
     return;
   }
@@ -88,62 +191,76 @@ function selectFile(file) {
 
   compressButton.disabled = false;
 
-  statusMessage.textContent =
-    "Image ready to compress.";
-
-  statusMessage.className =
-    "status-message";
-
   resultSection.hidden = true;
 
-  originalPreview.src =
-    URL.createObjectURL(file);
+  setStatus(
+    "Image selected. Choose your target size.",
+    "success"
+  );
+
+  originalPreview.src = URL.createObjectURL(file);
 
   originalInfo.textContent =
     `Original: ${formatBytes(file.size)}`;
 }
 
 
-/* =========================
-   DRAG & DROP
-========================= */
+// =========================
+// DRAG & DROP
+// =========================
 
 ["dragenter", "dragover"].forEach((eventName) => {
+
   uploadBox.addEventListener(eventName, (event) => {
+
     event.preventDefault();
+
     uploadBox.classList.add("dragging");
   });
 });
 
 
 ["dragleave", "drop"].forEach((eventName) => {
+
   uploadBox.addEventListener(eventName, (event) => {
+
     event.preventDefault();
+
     uploadBox.classList.remove("dragging");
   });
 });
 
 
 uploadBox.addEventListener("drop", (event) => {
+
   const file = event.dataTransfer.files[0];
 
-  if (file) {
-    selectFile(file);
-  }
+  selectFile(file);
 });
 
 
-/* =========================
-   COMPRESS
-========================= */
+// =========================
+// COMPRESS BUTTON
+// =========================
 
 compressButton.addEventListener("click", async () => {
-  if (!selectedFile) {
-    statusMessage.textContent =
-      "Please choose an image first.";
 
-    statusMessage.className =
-      "status-message error";
+  if (!selectedFile) {
+
+    setStatus(
+      "Please choose an image first.",
+      "error"
+    );
+
+    return;
+  }
+
+  if (!targetSize || targetSize < 2048) {
+
+    setStatus(
+      "Please choose a valid target size.",
+      "error"
+    );
 
     return;
   }
@@ -151,62 +268,117 @@ compressButton.addEventListener("click", async () => {
   compressButton.disabled = true;
   compressButton.textContent = "Compressing...";
 
-  statusMessage.textContent =
-    "Compressing your image...";
-
-  statusMessage.className =
-    "status-message";
+  setStatus(
+    "Compressing your image...",
+    ""
+  );
 
   try {
-    const blob = await compressImage(
+
+    const result = await compressImage(
       selectedFile,
       targetSize
     );
 
-    showResult(blob);
+    if (currentDownloadUrl) {
 
-    statusMessage.textContent =
-      "Compression completed successfully.";
+      URL.revokeObjectURL(currentDownloadUrl);
+    }
 
-    statusMessage.className =
-      "status-message success";
+    currentDownloadUrl =
+      URL.createObjectURL(result.blob);
+
+    compressedPreview.src =
+      currentDownloadUrl;
+
+    originalInfo.textContent =
+      `Original: ${formatBytes(selectedFile.size)}`;
+
+    compressedInfo.textContent =
+      `Compressed: ${formatBytes(result.blob.size)}`;
+
+    const saved = Math.max(
+      0,
+      Math.round(
+        (1 - result.blob.size / selectedFile.size) * 100
+      )
+    );
+
+    savedPercentage.textContent =
+      `${saved}%`;
+
+    if (result.blob.size <= targetSize) {
+
+      qualityMessage.textContent =
+        `Target reached: ${formatBytes(result.blob.size)}.`;
+
+    } else {
+
+      qualityMessage.textContent =
+        `Best practical result: ${formatBytes(result.blob.size)}.`;
+    }
+
+    downloadButton.href =
+      currentDownloadUrl;
+
+    downloadButton.download =
+      `targetkb-${getBaseName(selectedFile.name)}.jpg`;
+
+    resultSection.hidden = false;
+
+    setStatus(
+      "Compression complete!",
+      "success"
+    );
+
+    resultSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
 
   } catch (error) {
+
     console.error(error);
 
-    statusMessage.textContent =
-      "Compression failed. Please try another image.";
+    setStatus(
+      "Compression failed. Please try another image.",
+      "error"
+    );
 
-    statusMessage.className =
-      "status-message error";
+  } finally {
+
+    compressButton.disabled = false;
+    compressButton.textContent = "Compress Image";
   }
-
-  compressButton.disabled = false;
-  compressButton.textContent =
-    "Compress Image";
 });
 
 
-/* =========================
-   LOAD IMAGE
-========================= */
+// =========================
+// IMAGE LOADER
+// =========================
 
 function loadImage(file) {
+
   return new Promise((resolve, reject) => {
+
     const image = new Image();
 
     const url =
       URL.createObjectURL(file);
 
     image.onload = () => {
+
       URL.revokeObjectURL(url);
+
       resolve(image);
     };
 
     image.onerror = () => {
+
       URL.revokeObjectURL(url);
+
       reject(
-        new Error("Could not load image")
+        new Error("Image could not be loaded.")
       );
     };
 
@@ -215,19 +387,25 @@ function loadImage(file) {
 }
 
 
-/* =========================
-   CANVAS → JPEG
-========================= */
+// =========================
+// CANVAS → JPEG
+// =========================
 
 function canvasToBlob(canvas, quality) {
+
   return new Promise((resolve, reject) => {
+
     canvas.toBlob(
       (blob) => {
+
         if (blob) {
+
           resolve(blob);
+
         } else {
+
           reject(
-            new Error("Could not create image")
+            new Error("Could not create image.")
           );
         }
       },
@@ -238,218 +416,181 @@ function canvasToBlob(canvas, quality) {
 }
 
 
-/* =========================
-   COMPRESSION ENGINE
-========================= */
+// =========================
+// MAIN COMPRESSION
+// =========================
 
 async function compressImage(file, target) {
-  const image = await loadImage(file);
 
-  const canvas =
-    document.createElement("canvas");
-
-  const context =
-    canvas.getContext("2d");
+  const image =
+    await loadImage(file);
 
   let scale = 1;
-  let quality = 0.88;
 
-  canvas.width =
-    image.naturalWidth;
+  let canvas =
+    document.createElement("canvas");
 
-  canvas.height =
-    image.naturalHeight;
+  let context =
+    canvas.getContext("2d");
 
-  context.drawImage(
-    image,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
+  let bestBlob = null;
+
+  let bestDifference = Infinity;
 
 
-  /* Best Quality */
+  // Try different image dimensions
+  for (let scaleAttempt = 0; scaleAttempt < 12; scaleAttempt++) {
 
-  if (target === 0) {
-    return canvasToBlob(
-      canvas,
-      0.92
-    );
-  }
-
-
-  /* Try different qualities */
-
-  for (let attempt = 0; attempt < 20; attempt++) {
-
-    const blob =
-      await canvasToBlob(
-        canvas,
-        quality
+    canvas.width =
+      Math.max(
+        300,
+        Math.round(image.naturalWidth * scale)
       );
 
-    if (blob.size <= target) {
-      return blob;
-    }
-
-
-    /* Reduce quality first */
-
-    if (quality > 0.35) {
-
-      quality -= 0.05;
-
-    } else {
-
-      /* Then reduce dimensions */
-
-      scale *= 0.85;
-
-      canvas.width =
-        Math.max(
-          250,
-          Math.round(
-            image.naturalWidth * scale
-          )
-        );
-
-      canvas.height =
-        Math.max(
-          250,
-          Math.round(
-            image.naturalHeight * scale
-          )
-        );
-
-      context.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
+    canvas.height =
+      Math.max(
+        300,
+        Math.round(image.naturalHeight * scale)
       );
 
-      context.drawImage(
-        image,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-      quality = 0.78;
-    }
-  }
-
-
-  /* Return best attempt */
-
-  return canvasToBlob(
-    canvas,
-    Math.max(quality, 0.35)
-  );
-}
-
-
-/* =========================
-   SHOW RESULT
-========================= */
-
-function showResult(blob) {
-
-  if (compressedUrl) {
-    URL.revokeObjectURL(
-      compressedUrl
-    );
-  }
-
-  compressedUrl =
-    URL.createObjectURL(blob);
-
-
-  originalPreview.src =
-    URL.createObjectURL(
-      selectedFile
-    );
-
-  compressedPreview.src =
-    compressedUrl;
-
-
-  originalInfo.textContent =
-    `Original: ${formatBytes(
-      selectedFile.size
-    )}`;
-
-
-  compressedInfo.textContent =
-    `Compressed: ${formatBytes(
-      blob.size
-    )}`;
-
-
-  const saved =
-    Math.max(
+    context.clearRect(
       0,
-      Math.round(
-        (1 - blob.size / selectedFile.size) * 100
-      )
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    context.drawImage(
+      image,
+      0,
+      0,
+      canvas.width,
+      canvas.height
     );
 
 
-  savedPercentage.textContent =
-    `${saved}%`;
+    // Binary search for best JPEG quality
+    let low = 0.05;
+    let high = 0.95;
+
+    let localBest = null;
 
 
-  if (blob.size <= targetSize) {
+    for (let i = 0; i < 9; i++) {
 
-    qualityMessage.textContent =
-      `Target reached: ${formatBytes(
-        blob.size
-      )}`;
+      const quality =
+        (low + high) / 2;
 
-  } else {
+      const blob =
+        await canvasToBlob(
+          canvas,
+          quality
+        );
 
-    qualityMessage.textContent =
-      `Best practical result: ${formatBytes(
-        blob.size
-      )}`;
+      const difference =
+        Math.abs(blob.size - target);
 
+
+      if (
+        !localBest ||
+        difference < localBest.difference
+      ) {
+
+        localBest = {
+          blob: blob,
+          difference: difference
+        };
+      }
+
+
+      if (blob.size > target) {
+
+        high = quality;
+
+      } else {
+
+        low = quality;
+      }
+    }
+
+
+    if (
+      localBest &&
+      localBest.difference < bestDifference
+    ) {
+
+      bestBlob =
+        localBest.blob;
+
+      bestDifference =
+        localBest.difference;
+    }
+
+
+    // Target reached
+    if (
+      localBest &&
+      localBest.blob.size <= target
+    ) {
+
+      return {
+        blob: localBest.blob
+      };
+    }
+
+
+    // Reduce dimensions if still too large
+    scale *= 0.84;
   }
 
 
-  downloadButton.href =
-    compressedUrl;
+  if (!bestBlob) {
 
-  downloadButton.download =
-    "targetkb-compressed.jpg";
-
-
-  resultSection.hidden =
-    false;
+    throw new Error(
+      "Compression failed."
+    );
+  }
 
 
-  resultSection.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  return {
+    blob: bestBlob
+  };
 }
 
 
-/* =========================
-   FORMAT FILE SIZE
-========================= */
+// =========================
+// STATUS MESSAGE
+// =========================
+
+function setStatus(message, type) {
+
+  statusMessage.textContent =
+    message;
+
+  statusMessage.className =
+    "status-message";
+
+  if (type) {
+
+    statusMessage.classList.add(type);
+  }
+}
+
+
+// =========================
+// FORMAT BYTES
+// =========================
 
 function formatBytes(bytes) {
 
   if (bytes < 1024) {
+
     return `${bytes} B`;
   }
 
   if (bytes < 1024 * 1024) {
-    return `${(
-      bytes / 1024
-    ).toFixed(1)} KB`;
+
+    return `${(bytes / 1024).toFixed(1)} KB`;
   }
 
   return `${(
@@ -457,3 +598,32 @@ function formatBytes(bytes) {
     (1024 * 1024)
   ).toFixed(2)} MB`;
 }
+
+
+// =========================
+// FILE NAME
+// =========================
+
+function getBaseName(filename) {
+
+  return filename
+    .replace(/\.[^/.]+$/, "")
+    .replace(/[^a-zA-Z0-9-_]/g, "-")
+    .substring(0, 60);
+}
+
+
+// =========================
+// INITIAL STATE
+// =========================
+
+// 50 KB selected by default
+targetButtons.forEach((button, index) => {
+
+  if (index === 0) {
+
+    button.classList.add("active");
+  }
+});
+
+compressButton.disabled = true;
