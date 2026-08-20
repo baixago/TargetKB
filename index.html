@@ -1,231 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TargetKB - Image Compressor</title>
+  <meta name="description" content="Compress JPG, PNG and WebP images to 50KB, 100KB or your preferred target size directly in your browser.">
 
-  <title>TargetKB – Exact Size Image Compressor</title>
-  <meta
-    name="description"
-    content="Compress JPG, PNG and WebP images to your exact target size with TargetKB."
-  />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  />
-
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
   <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.html" aria-label="TargetKB homepage">
-        <span class="brand-mark">TK</span>
-        <span>TargetKB</span>
-      </a>
+    <a class="logo" href="./">TK TargetKB</a>
 
-      <nav class="main-nav" aria-label="Main navigation">
-        <a href="#compressor">Compressor</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#privacy">Privacy</a>
-      </nav>
-    </div>
+    <nav class="nav">
+      <a href="#compressor">Compressor</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
   </header>
 
   <main>
-    <section class="hero-section">
-      <div class="container hero-content">
-        <div class="hero-copy">
-          <p class="eyebrow">FAST · PRIVATE · EXACT SIZE</p>
+    <section class="hero">
+      <p class="eyebrow">FAST · PRIVATE · EXACT SIZE</p>
 
-          <h1>Compress Images to Your Exact Size</h1>
+      <h1>Compress Images to Your Exact Size</h1>
 
-          <p class="hero-text">
-            Reduce JPG, PNG and WebP images to 50KB, 100KB or your preferred size.
-            Everything is designed for a simple and fast experience.
-          </p>
+      <p class="hero-text">
+        Reduce JPG, PNG and WebP images to 50KB, 100KB or your preferred size.
+        Everything is processed directly in your browser.
+      </p>
 
-          <a class="hero-link" href="#compressor">
-            Start Compressing
-            <span aria-hidden="true">↓</span>
-          </a>
-        </div>
-
-        <div class="hero-gauge" aria-hidden="true">
-          <div class="gauge-ring" style="--pct: 82">
-            <div class="gauge-center">
-              <span class="gauge-pct">82%</span>
-              <span class="gauge-caption">smaller</span>
-            </div>
-          </div>
-
-          <div class="gauge-readout">
-            <span class="before">1.8 MB</span>
-            <span class="arrow">→</span>
-            <span class="after">48 KB</span>
-          </div>
-        </div>
-      </div>
+      <a class="start-button" href="#compressor">
+        Start Compressing
+      </a>
     </section>
 
-    <section id="compressor" class="compressor-section">
-      <div class="container">
-        <div class="tool-card">
-          <div class="tool-heading">
-            <p class="section-label">IMAGE COMPRESSOR</p>
-            <h2>Choose an image to begin</h2>
-            <p>
-              Supported formats: JPG, PNG and WebP
-            </p>
-          </div>
+    <section class="compressor-section" id="compressor">
+      <div class="compressor-card">
+        <p class="section-label">IMAGE COMPRESSOR</p>
 
-          <label class="upload-box" for="imageInput">
-            <span class="upload-icon" aria-hidden="true">↑</span>
-            <span class="upload-title">Drag & drop your image here</span>
-            <span class="upload-subtitle">or choose a file from your device</span>
+        <div class="upload-box" id="dropZone">
+          <div class="upload-icon">↑</div>
 
-            <span class="choose-button">Choose Image</span>
+          <h2>Choose an image to begin</h2>
 
-            <input
-              id="imageInput"
-              type="file"
-              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-              hidden
-            />
+          <p>Supported formats: JPG, PNG and WebP</p>
+
+          <label class="primary-button" for="imageInput">
+            Choose Image
           </label>
 
-          <p id="fileMessage" class="file-message" aria-live="polite">
+          <input
+            id="imageInput"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+          >
+
+          <p class="file-name" id="fileName">
             No image selected yet.
           </p>
+        </div>
 
-          <div class="options-section">
-            <h3>Choose target size</h3>
+        <div class="size-heading">Choose target size</div>
 
-            <div class="target-buttons" role="group" aria-label="Target image size">
-              <button class="target-button" type="button" data-target="51200">
-                50KB
-              </button>
-
-              <button class="target-button" type="button" data-target="102400">
-                100KB
-              </button>
-
-              <button class="target-button secondary-button" type="button" data-target="0">
-                Best Quality
-              </button>
-            </div>
-          </div>
-
-          <button id="compressButton" class="compress-button" type="button" disabled>
-            Compress Image
+        <div class="size-options">
+          <button class="size-button active" data-size="51200">
+            50KB
           </button>
 
-          <p id="statusMessage" class="status-message" aria-live="polite"></p>
+          <button class="size-button" data-size="102400">
+            100KB
+          </button>
+
+          <button class="size-button" data-size="0">
+            Best Quality
+          </button>
         </div>
 
-        <section id="resultSection" class="result-section" hidden>
-          <div class="result-heading">
-            <p class="section-label">COMPRESSION RESULT</p>
-            <h2>Before and after</h2>
-          </div>
+        <button class="compress-button" id="compressBtn">
+          Compress Image
+        </button>
 
-          <div class="comparison-grid">
-            <article class="preview-card">
-              <h3>Original Image</h3>
-              <div class="image-preview">
-                <img id="originalPreview" src="" alt="Original image preview" />
-              </div>
-              <p id="originalInfo">Original file information</p>
-            </article>
+        <div class="result-box" id="result">
+          <p class="section-label">COMPRESSION RESULT</p>
 
-            <article class="preview-card">
-              <h3>Compressed Image</h3>
-              <div class="image-preview">
-                <img id="compressedPreview" src="" alt="Compressed image preview" />
-              </div>
-              <p id="compressedInfo">Compressed file information</p>
-            </article>
-          </div>
+          <img id="preview" alt="Compressed image preview">
 
-          <div class="result-summary">
-            <p>
-              Size saved:
-              <strong id="savedPercentage">0%</strong>
-            </p>
+          <p class="result-text" id="resultText"></p>
 
-            <p id="qualityMessage">
-              Your compressed image will appear here.
-            </p>
-          </div>
-
-          <a id="downloadButton" class="download-button" href="#" download>
+          <a
+            class="download-button"
+            id="downloadBtn"
+            href="#"
+            download="targetkb-compressed.jpg"
+          >
             Download Compressed Image
           </a>
-        </section>
-      </div>
-    </section>
-
-    <section id="how-it-works" class="info-section">
-      <div class="container">
-        <p class="section-label">HOW IT WORKS</p>
-
-        <div class="info-grid">
-          <article class="info-card">
-            <span class="info-number">01</span>
-            <h2>Upload</h2>
-            <p>
-              Select a JPG, PNG or WebP image from your phone or computer.
-            </p>
-          </article>
-
-          <article class="info-card">
-            <span class="info-number">02</span>
-            <h2>Choose Size</h2>
-            <p>
-              Select 50KB, 100KB or the quality mode that fits your needs.
-            </p>
-          </article>
-
-          <article class="info-card">
-            <span class="info-number">03</span>
-            <h2>Download</h2>
-            <p>
-              Compare the result and download your compressed image.
-            </p>
-          </article>
         </div>
       </div>
     </section>
 
-    <section id="privacy" class="privacy-section">
-      <div class="container privacy-box">
-        <p class="section-label">PRIVACY FIRST</p>
-        <h2>Your images stay in your browser</h2>
-        <p>
-          Compression runs entirely on your device using the browser's canvas API.
-          Your image is never uploaded to a server, sent over the network, or
-          stored anywhere outside this tab.
-        </p>
+    <section class="steps-section" id="how-it-works">
+      <p class="section-label">HOW IT WORKS</p>
+
+      <div class="steps-grid">
+        <article class="step-card">
+          <span>01</span>
+          <h3>Upload</h3>
+          <p>Select a JPG, PNG or WebP image from your phone or computer.</p>
+        </article>
+
+        <article class="step-card">
+          <span>02</span>
+          <h3>Choose Size</h3>
+          <p>Select 50KB, 100KB or the quality mode that fits your needs.</p>
+        </article>
+
+        <article class="step-card">
+          <span>03</span>
+          <h3>Download</h3>
+          <p>Compare the result and download your compressed image.</p>
+        </article>
       </div>
+    </section>
+
+    <section class="privacy-section" id="privacy">
+      <p class="section-label">PRIVACY FIRST</p>
+
+      <h2>Your images stay on your device</h2>
+
+      <p>
+        Compression runs entirely in your browser. Your image is not uploaded
+        to a server, sent over the network, or stored outside this tab.
+      </p>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container footer-inner">
-      <p>© 2026 TargetKB. All rights reserved.</p>
+    <p>© 2026 TargetKB. All rights reserved.</p>
 
-      <div class="footer-links">
-        <a href="#privacy">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Contact</a>
-      </div>
+    <div>
+      <a href="#compressor">Compressor</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#privacy">Privacy</a>
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="./script.js"></script>
 </body>
 </html>
