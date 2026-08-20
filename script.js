@@ -1,490 +1,604 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+const imageInput = document.getElementById("imageInput");
+const dropZone = document.getElementById("dropZone");
 
-  <title>TargetKB – Image Compressor</title>
+const fileMessage = document.getElementById("fileMessage");
+const compressButton = document.getElementById("compressButton");
 
-  <meta
-    name="description"
-    content="Compress JPG, PNG and WebP images toward your target file size with TargetKB."
-  />
+const statusMessage = document.getElementById("statusMessage");
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+const targetButtons = document.querySelectorAll(".target-button");
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap"
-    rel="stylesheet"
-  />
+const customBox = document.getElementById("customBox");
+const customSize = document.getElementById("customSize");
 
-  <link rel="stylesheet" href="style.css" />
-</head>
+const resultSection = document.getElementById("resultSection");
 
-<body>
+const originalPreview =
+  document.getElementById("originalPreview");
 
-  <!-- HEADER -->
-  <header class="site-header">
-    <div class="container header-inner">
+const compressedPreview =
+  document.getElementById("compressedPreview");
 
-      <a class="brand" href="index.html">
-        <span class="brand-mark">TK</span>
-        <span>TargetKB</span>
-      </a>
+const originalInfo =
+  document.getElementById("originalInfo");
 
-      <nav class="main-nav">
-        <a href="#compressor">Compressor</a>
-        <a href="#how-it-works">How It Works</a>
-        <a href="#privacy">Privacy</a>
-      </nav>
+const compressedInfo =
+  document.getElementById("compressedInfo");
 
-    </div>
-  </header>
+const savedPercentage =
+  document.getElementById("savedPercentage");
 
+const qualityMessage =
+  document.getElementById("qualityMessage");
 
-  <main>
+const downloadButton =
+  document.getElementById("downloadButton");
 
-    <!-- HERO -->
-    <section class="hero-section">
 
-      <div class="container hero-content">
+let selectedFile = null;
+let targetSize = 51200;
+let compressedUrl = null;
 
-        <div class="hero-copy">
 
-          <p class="eyebrow">
-            FAST · PRIVATE · SIMPLE
-          </p>
+/* =========================
+   TARGET BUTTONS
+========================= */
 
-          <h1>
-            Compress Images Toward Your Target Size
-          </h1>
+targetButtons.forEach(function(button) {
 
-          <p class="hero-text">
-            Reduce JPG, PNG and WebP images toward 50KB, 100KB
-            or your own custom target size.
-          </p>
+  button.addEventListener("click", function() {
 
-          <a class="hero-link" href="#compressor">
-            Start Compressing
-            <span>↓</span>
-          </a>
+    targetButtons.forEach(function(item) {
+      item.classList.remove("active");
+    });
 
-        </div>
+    button.classList.add("active");
 
+    const target = button.dataset.target;
 
-        <div class="hero-gauge">
+    if (target === "custom") {
 
-          <div class="gauge-ring">
+      customBox.classList.add("show");
 
-            <div class="gauge-center">
-              <span class="gauge-pct">KB</span>
-              <span class="gauge-caption">Target Size</span>
-            </div>
+      updateCustomTarget();
 
-          </div>
+    } else {
 
-          <div class="gauge-readout">
-            <span>IMAGE</span>
-            <span class="arrow">→</span>
-            <span class="after">TARGET</span>
-          </div>
+      customBox.classList.remove("show");
 
-        </div>
+      targetSize = Number(target);
 
-      </div>
+    }
 
-    </section>
+  });
 
+});
 
-    <!-- COMPRESSOR -->
-    <section id="compressor" class="compressor-section">
-
-      <div class="container">
-
-        <div class="tool-card">
 
-          <div class="tool-heading">
+/* =========================
+   CUSTOM SIZE
+========================= */
 
-            <p class="section-label">
-              IMAGE COMPRESSOR
-            </p>
-
-            <h2>
-              Compress your image
-            </h2>
-
-            <p>
-              JPG, PNG and WebP supported
-            </p>
+customSize.addEventListener("input", function() {
+  updateCustomTarget();
+});
 
-          </div>
-
-
-          <!-- UPLOAD -->
-          <label
-            id="dropZone"
-            class="upload-box"
-            for="imageInput"
-          >
-
-            <span class="upload-icon">
-              ↑
-            </span>
-
-            <span class="upload-title">
-              Drag & Drop your image here
-            </span>
 
-            <span class="upload-subtitle">
-              or choose a file from your device
-            </span>
+function updateCustomTarget() {
 
-            <span class="choose-button">
-              Choose Image
-            </span>
+  const value = Number(customSize.value);
 
-            <input
-              id="imageInput"
-              type="file"
-              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-              hidden
-            />
+  if (value > 0) {
 
-          </label>
+    targetSize = value * 1024;
 
+  }
 
-          <p
-            id="fileMessage"
-            class="file-message"
-            aria-live="polite"
-          >
-            No image selected yet.
-          </p>
+}
 
 
-          <!-- TARGET SIZE -->
-          <div class="options-section">
+/* =========================
+   FILE SELECT
+========================= */
 
-            <h3>
-              Choose target size
-            </h3>
+imageInput.addEventListener("change", function(event) {
 
-            <div
-              class="target-buttons"
-              role="group"
-              aria-label="Target image size"
-            >
+  const file = event.target.files[0];
 
-              <button
-                class="target-button active"
-                type="button"
-                data-target="51200"
-              >
-                50 KB
-              </button>
+  selectFile(file);
 
-              <button
-                class="target-button"
-                type="button"
-                data-target="102400"
-              >
-                100 KB
-              </button>
+});
 
-              <button
-                class="target-button"
-                type="button"
-                data-target="custom"
-              >
-                Custom
-              </button>
 
-            </div>
+function selectFile(file) {
 
+  if (!file) {
+    return;
+  }
 
-            <!-- CUSTOM SIZE -->
-            <div
-              id="customSizeBox"
-              class="custom-size-box"
-              hidden
-            >
 
-              <label for="customSize">
-                Target size
-              </label>
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+  ];
 
-              <div class="custom-input-row">
 
-                <input
-                  id="customSize"
-                  type="number"
-                  min="2"
-                  max="5000"
-                  placeholder="75"
-                  inputmode="numeric"
-                />
+  if (!allowedTypes.includes(file.type)) {
 
-                <span>KB</span>
+    showError(
+      "Please select a JPG, PNG or WebP image."
+    );
 
-              </div>
+    return;
+  }
 
-              <p>
-                Enter a target between 2 KB and 5000 KB.
-              </p>
 
-            </div>
+  selectedFile = file;
 
-          </div>
+  fileMessage.textContent =
+    file.name + " • " + formatBytes(file.size);
 
 
-          <p class="quality-note">
-            ✨ Best quality possible while reducing file size.
-          </p>
+  compressButton.disabled = false;
 
+  resultSection.hidden = true;
 
-          <!-- COMPRESS -->
-          <button
-            id="compressButton"
-            class="compress-button"
-            type="button"
-            disabled
-          >
-            Compress Image
-          </button>
+  statusMessage.textContent = "";
 
+  originalPreview.src =
+    URL.createObjectURL(file);
 
-          <p
-            id="statusMessage"
-            class="status-message"
-            aria-live="polite"
-          ></p>
+}
 
-        </div>
 
+/* =========================
+   DRAG & DROP
+========================= */
 
-        <!-- RESULT -->
-        <section
-          id="resultSection"
-          class="result-section"
-          hidden
-        >
+["dragenter", "dragover"].forEach(function(eventName) {
 
-          <div class="result-heading">
+  dropZone.addEventListener(eventName, function(event) {
 
-            <p class="section-label">
-              COMPRESSION RESULT
-            </p>
+    event.preventDefault();
 
-            <h2>
-              Before and after
-            </h2>
+    dropZone.classList.add("dragging");
 
-          </div>
+  });
 
+});
 
-          <div class="comparison-grid">
 
-            <article class="preview-card">
+["dragleave", "drop"].forEach(function(eventName) {
 
-              <h3>
-                Original Image
-              </h3>
+  dropZone.addEventListener(eventName, function(event) {
 
-              <div class="image-preview">
-                <img
-                  id="originalPreview"
-                  src=""
-                  alt="Original image preview"
-                />
-              </div>
+    event.preventDefault();
 
-              <p id="originalInfo">
-                Original file
-              </p>
+    dropZone.classList.remove("dragging");
 
-            </article>
+  });
 
+});
 
-            <article class="preview-card">
 
-              <h3>
-                Compressed Image
-              </h3>
+dropZone.addEventListener("drop", function(event) {
 
-              <div class="image-preview">
-                <img
-                  id="compressedPreview"
-                  src=""
-                  alt="Compressed image preview"
-                />
-              </div>
+  const file =
+    event.dataTransfer.files[0];
 
-              <p id="compressedInfo">
-                Compressed file
-              </p>
+  selectFile(file);
 
-            </article>
+});
 
-          </div>
 
+/* =========================
+   COMPRESS
+========================= */
 
-          <div class="result-summary">
+compressButton.addEventListener("click", async function() {
 
-            <p>
-              Size saved:
-              <strong id="savedPercentage">
-                0%
-              </strong>
-            </p>
+  if (!selectedFile) {
 
-            <p id="qualityMessage">
-              Your result is ready.
-            </p>
+    showError(
+      "Please choose an image first."
+    );
 
-          </div>
+    return;
+  }
 
 
-          <a
-            id="downloadButton"
-            class="download-button"
-            href="#"
-            download="targetkb-compressed.jpg"
-          >
-            Download Compressed Image
-          </a>
+  const activeButton =
+    document.querySelector(".target-button.active");
 
-        </section>
 
-      </div>
+  if (
+    activeButton &&
+    activeButton.dataset.target === "custom"
+  ) {
 
-    </section>
+    const customValue =
+      Number(customSize.value);
 
 
-    <!-- HOW IT WORKS -->
-    <section id="how-it-works" class="info-section">
+    if (!customValue || customValue <= 0) {
 
-      <div class="container">
+      showError(
+        "Please enter a valid target size."
+      );
 
-        <p class="section-label">
-          HOW IT WORKS
-        </p>
+      return;
+    }
 
-        <div class="info-grid">
 
-          <article class="info-card">
+    targetSize =
+      customValue * 1024;
 
-            <span class="info-number">
-              01
-            </span>
+  }
 
-            <h2>
-              Upload
-            </h2>
 
-            <p>
-              Select a JPG, PNG or WebP image.
-            </p>
+  compressButton.disabled = true;
 
-          </article>
+  compressButton.textContent =
+    "Compressing...";
 
 
-          <article class="info-card">
+  statusMessage.textContent =
+    "Optimizing your image...";
 
-            <span class="info-number">
-              02
-            </span>
+  statusMessage.className =
+    "status-message";
 
-            <h2>
-              Choose Size
-            </h2>
 
-            <p>
-              Select 50 KB, 100 KB or enter your own target.
-            </p>
+  try {
 
-          </article>
+    const blob =
+      await compressImage(
+        selectedFile,
+        targetSize
+      );
 
 
-          <article class="info-card">
+    if (compressedUrl) {
 
-            <span class="info-number">
-              03
-            </span>
+      URL.revokeObjectURL(
+        compressedUrl
+      );
 
-            <h2>
-              Download
-            </h2>
+    }
 
-            <p>
-              Compare your image and download the result.
-            </p>
 
-          </article>
+    compressedUrl =
+      URL.createObjectURL(blob);
 
-        </div>
 
-      </div>
+    compressedPreview.src =
+      compressedUrl;
 
-    </section>
 
+    originalInfo.textContent =
+      "Original: " +
+      formatBytes(selectedFile.size);
 
-    <!-- PRIVACY -->
-    <section id="privacy" class="privacy-section">
 
-      <div class="container privacy-box">
+    compressedInfo.textContent =
+      "Compressed: " +
+      formatBytes(blob.size);
 
-        <p class="section-label">
-          PRIVACY FIRST
-        </p>
 
-        <h2>
-          Your images stay in your browser
-        </h2>
+    const saved =
+      Math.max(
+        0,
+        Math.round(
+          (1 - blob.size / selectedFile.size) * 100
+        )
+      );
 
-        <p>
-          Compression happens directly on your device.
-          Your images are not uploaded to our server.
-        </p>
 
-      </div>
+    savedPercentage.textContent =
+      saved + "%";
 
-    </section>
 
-  </main>
+    if (blob.size <= targetSize) {
 
+      qualityMessage.textContent =
+        "Target size reached while preserving the best possible quality.";
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
+      statusMessage.textContent =
+        "Compression complete.";
 
-    <div class="container footer-inner">
+      statusMessage.className =
+        "status-message success";
 
-      <p>
-        © 2026 TargetKB. All rights reserved.
-      </p>
+    } else {
 
-      <div class="footer-links">
+      qualityMessage.textContent =
+        "The selected target was very small. The closest practical result was created.";
 
-        <a href="#privacy">
-          Privacy
-        </a>
+      statusMessage.textContent =
+        "Compression complete with the closest practical result.";
 
-        <a href="#">
-          Terms
-        </a>
+    }
 
-        <a href="#">
-          Contact
-        </a>
 
-      </div>
+    downloadButton.href =
+      compressedUrl;
 
-    </div>
 
-  </footer>
+    downloadButton.download =
+      "targetkb-compressed.jpg";
 
 
-  <script src="script.js"></script>
+    resultSection.hidden = false;
 
-</body>
-</html>
+
+    resultSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showError(
+      "Compression failed. Please try another image."
+    );
+
+  }
+
+
+  compressButton.disabled = false;
+
+  compressButton.textContent =
+    "Compress Image";
+
+});
+
+
+/* =========================
+   LOAD IMAGE
+========================= */
+
+function loadImage(file) {
+
+  return new Promise(function(resolve, reject) {
+
+    const image =
+      new Image();
+
+    const url =
+      URL.createObjectURL(file);
+
+
+    image.onload = function() {
+
+      URL.revokeObjectURL(url);
+
+      resolve(image);
+
+    };
+
+
+    image.onerror = function() {
+
+      URL.revokeObjectURL(url);
+
+      reject(
+        new Error("Could not load image")
+      );
+
+    };
+
+
+    image.src = url;
+
+  });
+
+}
+
+
+/* =========================
+   CANVAS TO BLOB
+========================= */
+
+function canvasToBlob(
+  canvas,
+  quality
+) {
+
+  return new Promise(function(resolve, reject) {
+
+    canvas.toBlob(
+      function(blob) {
+
+        if (blob) {
+
+          resolve(blob);
+
+        } else {
+
+          reject(
+            new Error(
+              "Could not create image"
+            )
+          );
+
+        }
+
+      },
+      "image/jpeg",
+      quality
+    );
+
+  });
+
+}
+
+
+/* =========================
+   IMAGE COMPRESSION
+========================= */
+
+async function compressImage(
+  file,
+  target
+) {
+
+  const image =
+    await loadImage(file);
+
+
+  const canvas =
+    document.createElement("canvas");
+
+
+  const context =
+    canvas.getContext("2d");
+
+
+  let quality = 0.90;
+
+  let scale = 1;
+
+  let blob = null;
+
+
+  canvas.width =
+    image.naturalWidth;
+
+  canvas.height =
+    image.naturalHeight;
+
+
+  function drawImage() {
+
+    context.clearRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+
+    context.drawImage(
+      image,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+  }
+
+
+  drawImage();
+
+
+  for (
+    let attempt = 0;
+    attempt < 30;
+    attempt++
+  ) {
+
+    blob =
+      await canvasToBlob(
+        canvas,
+        quality
+      );
+
+
+    if (blob.size <= target) {
+
+      return blob;
+
+    }
+
+
+    if (quality > 0.30) {
+
+      quality -= 0.04;
+
+    } else {
+
+      scale *= 0.86;
+
+
+      canvas.width =
+        Math.max(
+          300,
+          Math.round(
+            image.naturalWidth * scale
+          )
+        );
+
+
+      canvas.height =
+        Math.max(
+          300,
+          Math.round(
+            image.naturalHeight * scale
+          )
+        );
+
+
+      drawImage();
+
+
+      quality = 0.78;
+
+    }
+
+  }
+
+
+  return blob;
+
+}
+
+
+/* =========================
+   FORMAT BYTES
+========================= */
+
+function formatBytes(bytes) {
+
+  if (bytes < 1024) {
+
+    return bytes + " B";
+
+  }
+
+
+  if (bytes < 1024 * 1024) {
+
+    return (
+      (bytes / 1024).toFixed(1) +
+      " KB"
+    );
+
+  }
+
+
+  return (
+    (bytes / (1024 * 1024)).toFixed(2) +
+    " MB"
+  );
+
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+function showError(message) {
+
+  statusMessage.textContent =
+    message;
+
+  statusMessage.className =
+    "status-message error";
+
+}
