@@ -1,180 +1,133 @@
-:root {
-  --blue: #2563eb;
-  --blue-dark: #174fc4;
-  --green: #159765;
-  --dark: #172033;
-  --text: #263247;
-  --muted: #6b778a;
-  --line: #e3e8f0;
-  --background: #f6f8fc;
-  --white: #ffffff;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
+:root {
+  --blue: #2563eb;
+  --dark: #172033;
+  --muted: #667085;
+  --line: #e5eaf2;
+  --soft: #f5f8fd;
+  --white: #ffffff;
 }
 
 body {
-  min-width: 320px;
-  background: var(--background);
-  color: var(--text);
   font-family: Arial, sans-serif;
+  background: var(--soft);
+  color: var(--dark);
   line-height: 1.5;
 }
 
-.site-header {
+header {
+  width: 100%;
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 6%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  padding: 17px 6%;
-  background: var(--white);
-  border-bottom: 1px solid var(--line);
+  gap: 20px;
 }
 
 .logo {
   color: var(--blue);
   font-size: 21px;
   font-weight: 800;
-  text-decoration: none;
   white-space: nowrap;
 }
 
-.nav {
+nav {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-.nav a {
-  color: var(--muted);
+nav a {
+  color: #536174;
   font-size: 14px;
   text-decoration: none;
 }
 
-.nav a:hover {
+nav a:hover {
   color: var(--blue);
 }
 
 .hero {
   max-width: 850px;
-  margin: 0 auto;
-  padding: 68px 20px 38px;
+  margin: auto;
+  padding: 65px 20px 35px;
   text-align: center;
 }
 
-.eyebrow,
-.section-label {
+.tagline {
   color: var(--blue);
   font-size: 12px;
   font-weight: 800;
-  letter-spacing: 1.4px;
-}
-
-.eyebrow {
+  letter-spacing: 1.5px;
   margin-bottom: 14px;
 }
 
-.hero h1 {
+h1 {
   max-width: 720px;
-  margin: 0 auto;
-  color: var(--dark);
+  margin: auto;
   font-size: clamp(32px, 6vw, 54px);
-  letter-spacing: -1.4px;
   line-height: 1.08;
+  letter-spacing: -1px;
 }
 
-.hero-text {
+.hero p {
   max-width: 650px;
   margin: 20px auto 0;
   color: var(--muted);
   font-size: 16px;
 }
 
-.start-button,
-.primary-button,
-.compress-button,
-.download-button {
-  display: inline-block;
-  border: 0;
-  border-radius: 9px;
-  color: var(--white);
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-.start-button {
-  margin-top: 27px;
-  padding: 14px 24px;
-  background: var(--blue);
-}
-
-.start-button:hover,
-.primary-button:hover,
-.compress-button:hover {
-  background: var(--blue-dark);
-}
-
-.compressor-section {
+.compressor {
   max-width: 720px;
-  margin: 0 auto 78px;
-  padding: 0 18px;
+  margin: 15px auto 70px;
+  padding: 0 20px;
 }
 
-.compressor-card {
-  padding: 29px;
+.card {
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 20px;
+  padding: 28px;
   box-shadow: 0 15px 40px rgba(31, 52, 89, 0.08);
 }
 
-.compressor-card > .section-label {
+.section-title {
   margin-bottom: 22px;
+  color: var(--blue);
   text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
 }
 
-.upload-box {
-  padding: 40px 18px;
+.drop-zone {
+  padding: 42px 20px;
   background: #fbfcff;
-  border: 2px dashed #b9c9df;
+  border: 2px dashed #b8c8df;
   border-radius: 16px;
   text-align: center;
 }
 
-.upload-box.dragging {
+.drop-zone.drag {
   background: #edf5ff;
   border-color: var(--blue);
 }
 
-.upload-icon {
-  width: 42px;
-  height: 42px;
-  margin: 0 auto 12px;
-  border-radius: 50%;
-  background: #eaf2ff;
-  color: var(--blue);
-  font-size: 27px;
-  line-height: 42px;
+.drop-zone h2 {
+  margin-bottom: 8px;
+  font-size: 21px;
 }
 
-.upload-box h2 {
-  color: var(--dark);
-  font-size: 20px;
-}
-
-.upload-box > p:not(.file-name) {
-  margin: 8px 0 20px;
-  color: var(--muted);
+.drop-zone p {
+  margin-bottom: 20px;
+  color: #7b8798;
   font-size: 14px;
 }
 
@@ -182,24 +135,41 @@ input[type="file"] {
   display: none;
 }
 
-.primary-button {
-  padding: 13px 21px;
-  background: var(--blue);
+.choose-btn,
+.compress-btn,
+.download-btn {
+  display: inline-block;
+  border: 0;
+  border-radius: 9px;
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.file-name {
-  min-height: 20px;
-  margin-top: 15px;
+.choose-btn,
+.compress-btn {
+  background: var(--blue);
+  color: white;
+}
+
+.choose-btn:hover,
+.compress-btn:hover {
+  background: #174fc4;
+}
+
+#fileName {
+  margin-top: 16px;
   color: var(--muted);
   font-size: 13px;
-  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-.size-heading {
+.size-title {
   margin: 27px 0 13px;
-  color: var(--dark);
-  font-weight: 700;
   text-align: center;
+  font-weight: 700;
 }
 
 .size-options {
@@ -209,207 +179,181 @@ input[type="file"] {
   gap: 10px;
 }
 
-.size-button {
-  min-width: 90px;
+.size-options button {
+  min-width: 88px;
   padding: 11px 15px;
-  background: var(--white);
-  color: var(--text);
+  background: white;
+  color: #344054;
   border: 1px solid #cbd6e5;
   border-radius: 9px;
   cursor: pointer;
-  font-size: 14px;
 }
 
-.size-button.active {
+.size-options button.active {
   background: #edf4ff;
-  border-color: var(--blue);
   color: var(--blue);
+  border-color: var(--blue);
   font-weight: 700;
 }
 
-.compress-button {
+.compress-btn {
   width: 100%;
   margin-top: 23px;
-  padding: 14px 20px;
-  background: var(--blue);
   font-size: 16px;
 }
 
-.compress-button:disabled {
-  cursor: wait;
+.compress-btn:disabled {
   opacity: 0.65;
+  cursor: wait;
 }
 
-.result-box {
+#result {
   display: none;
-  margin-top: 27px;
-  padding-top: 25px;
+  margin-top: 26px;
+  padding-top: 24px;
   border-top: 1px solid var(--line);
   text-align: center;
-}
-
-.result-box .section-label {
-  margin-bottom: 18px;
 }
 
 #preview {
   display: block;
   max-width: 100%;
   max-height: 270px;
-  margin: 0 auto 16px;
+  margin: 0 auto 15px;
   border-radius: 12px;
 }
 
-.result-text {
+#resultText {
   margin-bottom: 16px;
   color: var(--muted);
   font-size: 14px;
 }
 
-.download-button {
-  padding: 13px 20px;
-  background: var(--green);
+.download-btn {
+  background: #159765;
+  color: white;
 }
 
-.download-button:hover {
+.download-btn:hover {
   background: #08794e;
 }
 
-.steps-section {
+.steps {
   max-width: 950px;
-  margin: 0 auto 78px;
-  padding: 0 18px;
-  text-align: center;
-}
-
-.steps-section > .section-label {
-  margin-bottom: 20px;
-}
-
-.steps-grid {
+  margin: 0 auto 70px;
+  padding: 0 20px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
-  text-align: left;
 }
 
-.step-card {
-  padding: 23px;
-  background: var(--white);
+.step {
+  padding: 24px;
+  background: white;
   border: 1px solid var(--line);
   border-radius: 15px;
 }
 
-.step-card span {
+.step-number {
   color: var(--blue);
   font-size: 13px;
   font-weight: 800;
 }
 
-.step-card h3 {
+.step h3 {
   margin: 8px 0;
-  color: var(--dark);
   font-size: 18px;
 }
 
-.step-card p {
+.step p {
   color: var(--muted);
   font-size: 14px;
 }
 
-.privacy-section {
+.privacy {
   max-width: 850px;
-  margin: 0 auto 75px;
+  margin: 0 auto 70px;
   padding: 32px 22px;
   background: #eaf3ff;
   border-radius: 17px;
   text-align: center;
 }
 
-.privacy-section h2 {
-  margin: 8px 0;
-  color: var(--dark);
+.privacy h2 {
+  margin-bottom: 9px;
   font-size: 23px;
 }
 
-.privacy-section p:last-child {
-  color: var(--muted);
+.privacy p {
+  color: #536174;
   font-size: 14px;
 }
 
-.site-footer {
+footer {
   padding: 28px 15px;
   background: var(--dark);
   color: #c8d0dc;
-  font-size: 13px;
   text-align: center;
+  font-size: 13px;
 }
 
-.site-footer div {
-  margin-top: 12px;
-}
-
-.site-footer a {
+footer a {
   margin: 0 8px;
-  color: var(--white);
+  color: white;
   text-decoration: none;
 }
 
 @media (max-width: 650px) {
-  .site-header {
+  header {
+    padding: 15px 18px;
     align-items: flex-start;
-    padding: 15px 17px;
   }
 
-  .nav {
+  nav {
     align-items: flex-end;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
   }
 
-  .nav a {
+  nav a {
     font-size: 12px;
   }
 
   .hero {
-    padding: 48px 17px 30px;
+    padding: 48px 18px 28px;
   }
 
-  .hero h1 {
-    font-size: 35px;
-  }
-
-  .hero-text {
+  .hero p {
     font-size: 14px;
   }
 
-  .compressor-section {
-    padding: 0 12px;
+  .compressor {
+    padding: 0 14px;
   }
 
-  .compressor-card {
-    padding: 17px;
+  .card {
+    padding: 18px;
     border-radius: 16px;
   }
 
-  .upload-box {
-    padding: 31px 13px;
+  .drop-zone {
+    padding: 32px 14px;
   }
 
-  .upload-box h2 {
+  .drop-zone h2 {
     font-size: 19px;
   }
 
-  .steps-section {
-    padding: 0 12px;
-  }
-
-  .steps-grid {
+  .steps {
     grid-template-columns: 1fr;
+    padding: 0 14px;
   }
 
-  .privacy-section {
-    margin-right: 12px;
-    margin-left: 12px;
+  .step {
+    padding: 20px;
   }
-}
+
+  .privacy {
+    margin: 0 14px 55px;
+  }
+  }
