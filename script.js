@@ -6,11 +6,11 @@ const result = document.getElementById("result");
 const preview = document.getElementById("preview");
 const resultText = document.getElementById("resultText");
 const downloadBtn = document.getElementById("downloadBtn");
-const sizeButtons = document.querySelectorAll(".size-btn");
+const sizeButtons = document.querySelectorAll(".size-button");
 
 let selectedFile = null;
 let targetSize = 51200;
-let oldUrl = null;
+let currentUrl = null;
 
 sizeButtons.forEach(function(button) {
   button.addEventListener("click", function() {
@@ -24,28 +24,28 @@ sizeButtons.forEach(function(button) {
 });
 
 imageInput.addEventListener("change", function(event) {
-  chooseFile(event.target.files[0]);
+  selectFile(event.target.files[0]);
 });
 
 ["dragenter", "dragover"].forEach(function(eventName) {
   dropZone.addEventListener(eventName, function(event) {
     event.preventDefault();
-    dropZone.classList.add("drag");
+    dropZone.classList.add("dragging");
   });
 });
 
 ["dragleave", "drop"].forEach(function(eventName) {
   dropZone.addEventListener(eventName, function(event) {
     event.preventDefault();
-    dropZone.classList.remove("drag");
+    dropZone.classList.remove("dragging");
   });
 });
 
 dropZone.addEventListener("drop", function(event) {
-  chooseFile(event.dataTransfer.files[0]);
+  selectFile(event.dataTransfer.files[0]);
 });
 
-function chooseFile(file) {
+function selectFile(file) {
   if (!file || !file.type.startsWith("image/")) {
     alert("Please select a JPG, PNG or WebP image.");
     return;
@@ -70,18 +70,24 @@ compressBtn.addEventListener("click", async function() {
   try {
     const blob = await compressImage(selectedFile, targetSize);
 
-    if (oldUrl) {
-      URL.revokeObjectURL(oldUrl);
+    if (currentUrl) {
+      URL.revokeObjectURL(currentUrl);
     }
 
-    oldUrl = URL.createObjectURL(blob);
-    preview.src = oldUrl;
+    currentUrl = URL.createObjectURL(blob);
+    preview.src = currentUrl;
+
+    const saved = Math.max(
+      0,
+      Math.round((1 - blob.size / selectedFile.size) * 100)
+    );
 
     resultText.textContent =
       "Original: " + formatBytes(selectedFile.size) +
-      " • Compressed: " + formatBytes(blob.size);
+      " • Compressed: " + formatBytes(blob.size) +
+      " • Saved: " + saved + "%";
 
-    downloadBtn.href = oldUrl;
+    downloadBtn.href = currentUrl;
     downloadBtn.download = "targetkb-compressed.jpg";
     result.style.display = "block";
   } catch (error) {
@@ -107,14 +113,14 @@ function loadImage(file) {
   });
 }
 
-function createBlob(canvas, quality) {
+function canvasToBlob(canvas, quality) {
   return new Promise(function(resolve, reject) {
     canvas.toBlob(
       function(blob) {
         if (blob) {
           resolve(blob);
         } else {
-          reject(new Error("Image conversion failed"));
+          reject(new Error("Could not create image"));
         }
       },
       "image/jpeg",
@@ -128,7 +134,7 @@ async function compressImage(file, target) {
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
 
-  let quality = 0.85;
+  let quality = 0.86;
   let scale = 1;
   let blob = null;
 
@@ -144,20 +150,20 @@ async function compressImage(file, target) {
   );
 
   if (target === 0) {
-    return createBlob(canvas, 0.92);
+    return canvasToBlob(canvas, 0.92);
   }
 
-  for (let i = 0; i < 15; i++) {
-    blob = await createBlob(canvas, quality);
+  for (let attempt = 0; attempt < 18; attempt++) {
+    blob = await canvasToBlob(canvas, quality);
 
     if (blob.size <= target) {
       return blob;
     }
 
     if (quality > 0.35) {
-      quality -= 0.06;
+      quality -= 0.055;
     } else {
-      scale *= 0.85;
+      scale *= 0.84;
 
       canvas.width = Math.max(
         300,
@@ -190,4 +196,4 @@ function formatBytes(bytes) {
   }
 
   return (bytes / 1024).toFixed(1) + " KB";
-      }
+ }
