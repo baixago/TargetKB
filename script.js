@@ -33,6 +33,7 @@ const downloadButton = document.getElementById("downloadButton");
 let selectedFile = null;
 let targetSize = 51200;
 let currentDownloadUrl = null;
+let isCompressing = false;
 
 
 /* =========================
@@ -42,6 +43,10 @@ let currentDownloadUrl = null;
 targetButtons.forEach(function(button) {
 
   button.addEventListener("click", function() {
+
+    if (isCompressing) {
+      return;
+    }
 
     targetButtons.forEach(function(item) {
       item.classList.remove("active");
@@ -96,6 +101,10 @@ customSize.addEventListener("input", function() {
 ========================= */
 
 imageInput.addEventListener("change", function(event) {
+
+  if (isCompressing) {
+    return;
+  }
 
   const file = event.target.files[0];
 
@@ -154,6 +163,10 @@ changeImageButton.addEventListener("click", function(event) {
   event.preventDefault();
   event.stopPropagation();
 
+  if (isCompressing) {
+    return;
+  }
+
   imageInput.click();
 
 });
@@ -191,6 +204,10 @@ changeImageButton.addEventListener("click", function(event) {
 
 uploadBox.addEventListener("drop", function(event) {
 
+  if (isCompressing) {
+    return;
+  }
+
   const file = event.dataTransfer.files[0];
 
   if (file) {
@@ -222,8 +239,13 @@ compressButton.addEventListener("click", async function() {
   }
 
 
+  isCompressing = true;
+
   compressButton.disabled = true;
   compressButton.textContent = "Compressing...";
+
+  uploadBox.classList.add("is-busy");
+  document.querySelector(".options-section").classList.add("is-busy");
 
   statusMessage.className = "status-message";
   statusMessage.textContent = "Working on your image...";
@@ -338,8 +360,13 @@ compressButton.addEventListener("click", async function() {
   }
 
 
+  isCompressing = false;
+
   compressButton.disabled = false;
   compressButton.textContent = "Compress Image";
+
+  uploadBox.classList.remove("is-busy");
+  document.querySelector(".options-section").classList.remove("is-busy");
 
 });
 
@@ -481,7 +508,25 @@ async function compressImage(file, target) {
     await loadImage(file);
 
 
-  let scale = 1;
+  /*
+    Phone camera photos are often 3000-5000px
+    wide. Running the quality binary search at
+    full resolution makes every toBlob() call
+    slow. Start from a capped working size —
+    it has no visible effect on a 50-500 KB
+    JPEG since that resolution already exceeds
+    what the target file size can hold.
+  */
+
+  const MAX_DIMENSION = 1600;
+
+  const longestSide =
+    Math.max(image.naturalWidth, image.naturalHeight);
+
+  let scale =
+    longestSide > MAX_DIMENSION
+      ? MAX_DIMENSION / longestSide
+      : 1;
 
 
   for (let resizeAttempt = 0; resizeAttempt < 8; resizeAttempt++) {
