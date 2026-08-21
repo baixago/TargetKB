@@ -1,943 +1,672 @@
-:root {
-  --bg: #f5f7f6;
-  --card: #ffffff;
-  --ink: #101512;
-  --soft: #5a6360;
-  --faint: #97a19d;
-  --border: #dbe1de;
-  --accent: #16a34a;
-  --accent-dark: #0f7c38;
-  --accent-soft: #e9f7ef;
-  --success: #16a34a;
-  --error: #c23b3b;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: "Inter", Arial, sans-serif;
-  background: linear-gradient(#f7f9f8, #f5f7f6);
-  color: var(--ink);
-  line-height: 1.6;
-}
-
-button,
-input {
-  font: inherit;
-}
-
-.container {
-  width: 100%;
-  max-width: 1050px;
-  margin: auto;
-  padding: 0 18px;
-}
-
-
-/* HEADER */
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: rgba(245,247,246,.92);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border);
-}
-
-.header-inner {
-  min-height: 65px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  text-decoration: none;
-  color: var(--ink);
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.brand-mark {
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  background: var(--ink);
-  color: white;
-  border-radius: 8px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-}
-
-nav {
-  display: flex;
-  gap: 22px;
-}
-
-nav a {
-  color: var(--soft);
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
-  transition: color .2s ease;
-}
-
-nav a:hover {
-  color: var(--accent-dark);
-}
-
+const imageInput = document.getElementById("imageInput");
 
-/* HERO */
-
-.hero-section {
-  padding: 70px 0 60px;
-}
-
-.hero-content {
-  display: grid;
-  grid-template-columns: 1.15fr .85fr;
-  align-items: center;
-  gap: 45px;
-}
-
-.eyebrow,
-.section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--accent-dark);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-}
-
-.eyebrow::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.hero-copy h1 {
-  margin-top: 15px;
-  font-family: "Space Grotesk", "Inter", sans-serif;
-  font-weight: 700;
-  font-size: clamp(34px, 5.6vw, 54px);
-  line-height: 1.06;
-  letter-spacing: -1px;
-}
-
-.hero-text {
-  max-width: 520px;
-  margin-top: 18px;
-  color: var(--soft);
-  font-size: 16px;
-}
-
-.hero-button {
-  display: inline-block;
-  margin-top: 28px;
-  padding: 13px 22px;
-  background: var(--ink);
-  color: white;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14.5px;
-  transition: transform .2s ease, background .2s ease;
-}
-
-.hero-button:hover {
-  background: var(--accent-dark);
-  transform: translateY(-2px);
-}
-
-.hero-card {
-  padding: 35px 20px;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 24px 48px -28px rgba(16, 21, 18, .18);
-}
-
-.gauge {
-  width: 160px;
-  height: 160px;
-  margin: auto;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: conic-gradient(var(--accent) 82%, #e5e9e6 0);
-  border: 13px solid white;
-  outline: 1px solid var(--border);
-}
-
-.gauge strong {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 30px;
-  font-weight: 700;
-}
-
-.gauge span {
-  color: var(--faint);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .4px;
-  text-transform: uppercase;
-}
-
-.size-example {
-  margin-top: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13.5px;
-  font-weight: 600;
-}
-
-.size-example span {
-  color: var(--faint);
-  text-decoration: line-through;
-}
-
-.size-example b {
-  color: var(--faint);
-  font-weight: 500;
-}
-
-.size-example strong {
-  color: var(--success);
-}
-
-
-/* TOOL */
-
-.compressor-section {
-  padding-bottom: 70px;
-}
-
-.tool-card {
-  max-width: 760px;
-  margin: auto;
-  padding: 32px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: 0 20px 44px -28px rgba(16, 21, 18, .22);
-}
-
-.tool-heading {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.tool-heading h2 {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 23px;
-  font-weight: 700;
-  margin-top: 8px;
-}
-
-.tool-heading p:last-child {
-  color: var(--soft);
-  font-size: 14px;
-  margin-top: 5px;
-}
-
-
-/* UPLOAD */
-
-.upload-box {
-  min-height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  border: 1.5px dashed var(--border);
-  border-radius: 14px;
-  background: #f1f4f2;
-  cursor: pointer;
-  transition: border-color .2s ease, background .2s ease, transform .2s ease, box-shadow .2s ease;
-}
-
-.upload-box:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -20px rgba(16, 21, 18, .25);
-}
-
-.upload-box.drag-active {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  border-style: solid;
-  transform: scale(1.015);
-  box-shadow: 0 0 0 4px rgba(22, 163, 74, .12);
-}
-
-#uploadInitial {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.upload-icon,
-.success-icon {
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  margin-bottom: 12px;
-  border-radius: 11px;
-  background: var(--accent-soft);
-  color: var(--accent-dark);
-  transition: transform .25s ease, background .25s ease;
-}
-
-.upload-icon svg {
-  width: 20px;
-  height: 20px;
-  transition: transform .25s ease;
-}
-
-.success-icon svg {
-  width: 20px;
-  height: 20px;
-}
-
-.success-icon {
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--success);
-  flex-shrink: 0;
-  animation: pop-in .35s cubic-bezier(.34, 1.56, .64, 1);
-}
-
-.success-icon svg {
-  width: 14px;
-  height: 14px;
-}
-
-@keyframes pop-in {
-  0% { transform: scale(0.4); opacity: 0; }
-  60% { transform: scale(1.08); opacity: 1; }
-  100% { transform: scale(1); }
-}
-
-.thumbnail-wrapper {
-  width: 76px;
-  height: 76px;
-  flex-shrink: 0;
-  overflow: hidden;
-  border-radius: 12px;
-  background: white;
-  border: 1px solid var(--border);
-  box-shadow: 0 6px 16px -10px rgba(16, 21, 18, .3);
-}
-
-.thumbnail-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.upload-box:hover .upload-icon,
-.upload-box.drag-active .upload-icon {
-  transform: translateY(-3px);
-}
-
-.upload-box.drag-active .upload-icon svg {
-  transform: scale(1.12);
-}
-
-.format-badges {
-  display: flex;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.format-badges span {
-  padding: 3px 9px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: white;
-  color: var(--faint);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: .3px;
-}
-
-#uploadInitial strong {
-  font-size: 15.5px;
-  font-weight: 700;
-}
-
-#uploadInitial span:not(.choose-button) {
-  display: block;
-  margin-top: 4px;
-  color: var(--faint);
-  font-size: 13px;
-}
-
-.choose-button,
-.change-button {
-  margin-top: 15px;
-  padding: 10px 18px;
-  border: 0;
-  border-radius: 7px;
-  background: var(--ink);
-  color: white;
-  font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background .2s ease, transform .2s ease;
-}
-
-.choose-button:hover,
-.change-button:hover {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-}
-
-.upload-selected {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  animation: fade-up .3s ease;
-}
-
-@keyframes fade-up {
-  0% { opacity: 0; transform: translateY(6px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-.selected-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  text-align: left;
-}
-
-.selected-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.selected-status strong {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.selected-meta {
-  flex: 1;
-  min-width: 0;
-}
-
-.selected-meta p {
-  margin-top: 5px;
-  color: var(--soft);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12.5px;
-}
-
-.upload-selected .change-button {
-  align-self: center;
-  margin-top: 18px;
-}
-
-.upload-box.is-busy {
-  pointer-events: none;
-  opacity: .65;
-}
-
-.target-buttons.is-busy,
-.options-section.is-busy {
-  pointer-events: none;
-  opacity: .65;
-}
-
-.hidden {
-  display: none !important;
-}
-
-
-/* TARGET */
-
-.options-section {
-  margin-top: 28px;
-}
-
-.options-section h3 {
-  margin-bottom: 11px;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.target-buttons {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-
-.target-button {
-  min-height: 45px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: white;
-  cursor: pointer;
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 700;
-  font-size: 13.5px;
-  color: var(--soft);
-  transition: border-color .2s ease, color .2s ease, background .2s ease;
-}
-
-.target-button.active {
-  background: var(--ink);
-  color: white;
-  border-color: var(--ink);
-}
-
-.target-button:hover {
-  border-color: var(--accent);
-  color: var(--accent-dark);
-}
-
-.target-button.active:hover {
-  color: white;
-}
-
-
-/* CUSTOM */
-
-.custom-box {
-  margin-top: 14px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: #f6f8f7;
-}
-
-.custom-box label {
-  display: block;
-  margin-bottom: 7px;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.custom-input-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.custom-input-row input {
-  width: 130px;
-  padding: 11px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  outline: none;
-  background: white;
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 600;
-}
-
-.custom-input-row input:focus {
-  border-color: var(--accent);
-}
-
-.custom-input-row span {
-  font-weight: 700;
-  color: var(--soft);
-}
-
-.custom-box small {
-  display: block;
-  margin-top: 7px;
-  color: var(--faint);
-  font-size: 11px;
-}
-
-.quality-note {
-  margin-top: 12px;
-  color: var(--soft);
-  font-size: 12.5px;
-}
-
-
-/* COMPRESS */
-
-.compress-button {
-  width: 100%;
-  margin-top: 20px;
-  padding: 15px;
-  border: 0;
-  border-radius: 9px;
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 15px;
-  transition: background .2s ease, transform .2s ease;
-}
-
-.compress-button:hover:not(:disabled) {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-}
-
-.compress-button:disabled {
-  opacity: .4;
-  cursor: not-allowed;
-}
-
-.status-message {
-  min-height: 22px;
-  margin-top: 10px;
-  text-align: center;
-  font-size: 13px;
-}
-
-.status-message.error {
-  color: var(--error);
-}
-
-.status-message.success {
-  color: var(--success);
-}
-
-
-/* RESULT */
-
-.result-section {
-  max-width: 1050px;
-  margin: 30px auto 0;
-  padding: 30px;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-}
-
-.result-heading {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.result-heading h2 {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 23px;
-  font-weight: 700;
-  margin-top: 8px;
-}
-
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.preview-card {
-  padding: 16px;
-  background: #f1f4f2;
-  border-radius: 12px;
-}
-
-.preview-card h3 {
-  margin-bottom: 10px;
-  font-size: 12.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .4px;
-  color: var(--soft);
-}
-
-.image-preview {
-  min-height: 220px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-}
-
-.image-preview img {
-  max-width: 100%;
-  max-height: 360px;
-  object-fit: contain;
-}
-
-.preview-card p {
-  margin-top: 10px;
-  color: var(--soft);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 12px;
-}
-
-.result-summary {
-  margin-top: 18px;
-  padding: 17px;
-  text-align: center;
-  background: var(--accent-soft);
-  border-radius: 10px;
-}
-
-.result-summary strong {
-  color: var(--success);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 15px;
-}
-
-#qualityMessage {
-  margin-top: 5px;
-  color: var(--soft);
-  font-size: 13px;
-}
-
-.download-button {
-  display: block;
-  margin-top: 18px;
-  padding: 15px;
-  text-align: center;
-  text-decoration: none;
-  background: var(--ink);
-  color: white;
-  border-radius: 9px;
-  font-weight: 700;
-  font-size: 14.5px;
-  transition: background .2s ease, transform .2s ease;
-}
-
-.download-button:hover {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-}
-
-
-/* INFO */
-
-.info-section {
-  padding: 40px 0 80px;
-}
-
-.center {
-  text-align: center;
-  margin-bottom: 30px;
-  justify-content: center;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 20px;
-}
-
-.info-grid article {
-  text-align: center;
-}
-
-.info-grid span {
-  width: 44px;
-  height: 44px;
-  margin: auto auto 14px;
-  display: grid;
-  place-items: center;
-  border: 1.5px solid var(--accent);
-  border-radius: 50%;
-  color: var(--accent-dark);
-  font-family: "JetBrains Mono", monospace;
-  font-weight: 700;
-  font-size: 13px;
-}
-
-.info-grid h2 {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.info-grid p {
-  color: var(--soft);
-  font-size: 13.5px;
-  margin-top: 6px;
-}
-
-
-/* PRIVACY */
-
-.privacy-section {
-  padding-bottom: 80px;
-}
-
-.privacy-box {
-  padding: 35px;
-  text-align: center;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-}
-
-.privacy-box h2 {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 22px;
-  font-weight: 700;
-  margin: 8px 0;
-}
-
-.privacy-box p:last-child {
-  max-width: 620px;
-  margin: auto;
-  color: var(--soft);
-  font-size: 14.5px;
-}
-
-
-/* FOOTER */
-
-footer {
-  border-top: 1px solid var(--border);
-  padding: 28px 0;
-}
-
-.footer-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-}
-
-.footer-inner p,
-.footer-inner a {
-  color: var(--faint);
-  font-size: 12px;
-}
-
-.footer-inner a {
-  margin-left: 15px;
-  text-decoration: none;
-  transition: color .2s ease;
-}
-
-.footer-inner a:hover {
-  color: var(--accent-dark);
-}
-
-
-/* MOBILE */
-
-@media (max-width: 780px) {
-
-  .hero-content {
-    grid-template-columns: 1fr;
-    text-align: center;
+const uploadBox = document.getElementById("uploadBox");
+const uploadInitial = document.getElementById("uploadInitial");
+const uploadSelected = document.getElementById("uploadSelected");
+
+const selectedPreview = document.getElementById("selectedPreview");
+const selectedInfo = document.getElementById("selectedInfo");
+const changeImageButton = document.getElementById("changeImageButton");
+
+const targetButtons = document.querySelectorAll(".target-button");
+
+const customBox = document.getElementById("customBox");
+const customSize = document.getElementById("customSize");
+
+const compressButton = document.getElementById("compressButton");
+const statusMessage = document.getElementById("statusMessage");
+
+const resultSection = document.getElementById("resultSection");
+
+const originalPreview = document.getElementById("originalPreview");
+const compressedPreview = document.getElementById("compressedPreview");
+
+const originalInfo = document.getElementById("originalInfo");
+const compressedInfo = document.getElementById("compressedInfo");
+
+const savedPercentage = document.getElementById("savedPercentage");
+const qualityMessage = document.getElementById("qualityMessage");
+
+const downloadButton = document.getElementById("downloadButton");
+
+
+let selectedFile = null;
+let targetSize = 51200;
+let currentDownloadUrl = null;
+let isCompressing = false;
+
+
+/* =========================
+   TARGET BUTTONS
+========================= */
+
+targetButtons.forEach(function(button) {
+
+  button.addEventListener("click", function() {
+
+    if (isCompressing) {
+      return;
+    }
+
+    targetButtons.forEach(function(item) {
+      item.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const value = button.dataset.target;
+
+    if (value === "custom") {
+
+      customBox.classList.remove("hidden");
+
+      targetSize = null;
+
+      customSize.focus();
+
+    } else {
+
+      customBox.classList.add("hidden");
+
+      targetSize = Number(value);
+
+    }
+
+    resultSection.classList.add("hidden");
+
+  });
+
+});
+
+
+/* =========================
+   CUSTOM SIZE
+========================= */
+
+customSize.addEventListener("input", function() {
+
+  const kb = Number(customSize.value);
+
+  if (kb >= 10) {
+    targetSize = kb * 1024;
+  } else {
+    targetSize = null;
   }
 
-  .hero-text {
-    margin-left: auto;
-    margin-right: auto;
+});
+
+
+/* =========================
+   IMAGE SELECT
+========================= */
+
+imageInput.addEventListener("change", function(event) {
+
+  if (isCompressing) {
+    return;
   }
 
-  .hero-card {
-    max-width: 320px;
-    margin: auto;
+  const file = event.target.files[0];
+
+  if (file) {
+    selectFile(file);
   }
 
-  .eyebrow {
-    justify-content: center;
+});
+
+
+function selectFile(file) {
+
+  if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+
+    showError("Please select a JPG, PNG or WebP image.");
+
+    return;
   }
 
-  nav {
-    gap: 10px;
-  }
 
-  nav a {
-    font-size: 11px;
-  }
+  selectedFile = file;
+
+
+  /* Show thumbnail */
+
+  const previewUrl = URL.createObjectURL(file);
+
+  selectedPreview.src = previewUrl;
+
+
+  /* Show friendly upload state */
+
+  uploadInitial.classList.add("hidden");
+  uploadSelected.classList.remove("hidden");
+
+
+  selectedInfo.textContent =
+    "Original size: " + formatBytes(file.size);
+
+
+  compressButton.disabled = false;
+
+  resultSection.classList.add("hidden");
+
+  showSuccess("Image selected and ready to compress.");
+
 }
 
 
-@media (max-width: 600px) {
+/* =========================
+   CHANGE IMAGE
+========================= */
 
-  .container {
-    padding-left: 14px;
-    padding-right: 14px;
+changeImageButton.addEventListener("click", function(event) {
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  if (isCompressing) {
+    return;
   }
 
-  .hero-section {
-    padding: 45px 0;
+  imageInput.click();
+
+});
+
+
+/* =========================
+   DRAG & DROP
+========================= */
+
+["dragenter", "dragover"].forEach(function(eventName) {
+
+  uploadBox.addEventListener(eventName, function(event) {
+
+    event.preventDefault();
+
+    uploadBox.classList.add("drag-active");
+
+  });
+
+});
+
+
+["dragleave", "drop"].forEach(function(eventName) {
+
+  uploadBox.addEventListener(eventName, function(event) {
+
+    event.preventDefault();
+
+    uploadBox.classList.remove("drag-active");
+
+  });
+
+});
+
+
+uploadBox.addEventListener("drop", function(event) {
+
+  if (isCompressing) {
+    return;
   }
 
-  .tool-card {
-    padding: 20px 15px;
+  const file = event.dataTransfer.files[0];
+
+  if (file) {
+    selectFile(file);
   }
 
-  .target-buttons {
-    grid-template-columns: 1fr;
+});
+
+
+/* =========================
+   COMPRESS
+========================= */
+
+compressButton.addEventListener("click", async function() {
+
+  if (!selectedFile) {
+
+    showError("Please choose an image first.");
+
+    return;
   }
 
-  .comparison-grid {
-    grid-template-columns: 1fr;
+
+  if (!targetSize || targetSize < 10 * 1024) {
+
+    showError("Please enter a target size of at least 10 KB.");
+
+    return;
   }
 
-  .info-grid {
-    grid-template-columns: 1fr;
-    gap: 30px;
+
+  isCompressing = true;
+
+  compressButton.disabled = true;
+  compressButton.textContent = "Compressing...";
+
+  uploadBox.classList.add("is-busy");
+  document.querySelector(".options-section").classList.add("is-busy");
+
+  statusMessage.className = "status-message";
+  statusMessage.textContent = "Working on your image...";
+
+
+  try {
+
+    const blob = await compressImage(
+      selectedFile,
+      targetSize
+    );
+
+
+    if (currentDownloadUrl) {
+      URL.revokeObjectURL(currentDownloadUrl);
+    }
+
+
+    currentDownloadUrl =
+      URL.createObjectURL(blob);
+
+
+    /* Preview */
+
+    originalPreview.src =
+      URL.createObjectURL(selectedFile);
+
+    compressedPreview.src =
+      currentDownloadUrl;
+
+
+    /* Information */
+
+    originalInfo.textContent =
+      "Original: " +
+      formatBytes(selectedFile.size);
+
+
+    compressedInfo.textContent =
+      "Compressed: " +
+      formatBytes(blob.size);
+
+
+    const saved = Math.max(
+      0,
+      Math.round(
+        (1 - blob.size / selectedFile.size) * 100
+      )
+    );
+
+
+    savedPercentage.textContent =
+      saved + "%";
+
+
+    if (blob.size <= targetSize) {
+
+      const gapPercent =
+        ((targetSize - blob.size) / targetSize) * 100;
+
+      if (gapPercent <= 15) {
+
+        qualityMessage.textContent =
+          "Landed right at your target size, at the best quality possible.";
+
+      } else {
+
+        qualityMessage.textContent =
+          "Target size reached. The image compressed further than requested because that was the closest quality step available.";
+
+      }
+
+    } else {
+
+      qualityMessage.textContent =
+        "The image could not reach the selected target without excessive quality loss. Try a larger target.";
+
+    }
+
+
+    downloadButton.href =
+      currentDownloadUrl;
+
+    downloadButton.download =
+      "targetkb-compressed.jpg";
+
+
+    resultSection.classList.remove("hidden");
+
+
+    statusMessage.className =
+      "status-message success";
+
+    statusMessage.textContent =
+      "Compression complete.";
+
+
+    resultSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    showError(
+      "Compression failed. Please try another image."
+    );
+
   }
 
-  .footer-inner {
-    flex-direction: column;
-    text-align: center;
-    gap: 12px;
-  }
 
-  .footer-inner a {
-    margin-left: 8px;
-    margin-right: 8px;
-  }
+  isCompressing = false;
+
+  compressButton.disabled = false;
+  compressButton.textContent = "Compress Image";
+
+  uploadBox.classList.remove("is-busy");
+  document.querySelector(".options-section").classList.remove("is-busy");
+
+});
+
+
+/* =========================
+   IMAGE LOADING
+========================= */
+
+function loadImage(file) {
+
+  return new Promise(function(resolve, reject) {
+
+    const image = new Image();
+
+    const url =
+      URL.createObjectURL(file);
+
+
+    image.onload = function() {
+
+      URL.revokeObjectURL(url);
+
+      resolve(image);
+
+    };
+
+
+    image.onerror = function() {
+
+      URL.revokeObjectURL(url);
+
+      reject(
+        new Error("Could not load image")
+      );
+
+    };
+
+
+    image.src = url;
+
+  });
+
 }
 
 
-/* REDUCED MOTION */
+/* =========================
+   CANVAS TO JPEG
+========================= */
 
-@media (prefers-reduced-motion: reduce) {
+function canvasToBlob(canvas, quality) {
 
-  html {
-    scroll-behavior: auto;
+  return new Promise(function(resolve, reject) {
+
+    canvas.toBlob(
+      function(blob) {
+
+        if (blob) {
+
+          resolve(blob);
+
+        } else {
+
+          reject(
+            new Error("Could not create image")
+          );
+
+        }
+
+      },
+      "image/jpeg",
+      quality
+    );
+
+  });
+
+}
+
+
+/* =========================
+   FIND BEST QUALITY AT A GIVEN RESOLUTION
+   Binary search converges tightly on the
+   largest blob that is still <= target,
+   instead of stepping down in coarse jumps.
+========================================= */
+
+async function findBestQualityForTarget(canvas, target) {
+
+  let low = 0.05;
+  let high = 0.95;
+
+  /*
+    If even the lowest quality is still
+    above target, this resolution cannot
+    reach the target — the caller should
+    shrink the canvas and try again.
+  */
+
+  const lowestBlob =
+    await canvasToBlob(canvas, low);
+
+  if (lowestBlob.size > target) {
+    return null;
   }
 
-  .hero-button,
-  .compress-button,
-  .download-button,
-  .choose-button,
-  .change-button {
-    transition: none;
+  let bestBlob = lowestBlob;
+
+  for (let i = 0; i < 10; i++) {
+
+    const quality = (low + high) / 2;
+
+    const blob =
+      await canvasToBlob(canvas, quality);
+
+    if (blob.size <= target) {
+
+      bestBlob = blob;
+      low = quality;
+
+    } else {
+
+      high = quality;
+
+    }
+
   }
+
+  return bestBlob;
+
+}
+
+
+/* =========================
+   COMPRESSION ENGINE
+========================= */
+
+async function compressImage(file, target) {
+
+  const image =
+    await loadImage(file);
+
+
+  /*
+    Phone camera photos are often 3000-5000px
+    wide. Running the quality binary search at
+    full resolution makes every toBlob() call
+    slow. Start from a capped working size —
+    it has no visible effect on a 50-500 KB
+    JPEG since that resolution already exceeds
+    what the target file size can hold.
+  */
+
+  const MAX_DIMENSION = 1600;
+
+  const longestSide =
+    Math.max(image.naturalWidth, image.naturalHeight);
+
+  let scale =
+    longestSide > MAX_DIMENSION
+      ? MAX_DIMENSION / longestSide
+      : 1;
+
+
+  for (let resizeAttempt = 0; resizeAttempt < 8; resizeAttempt++) {
+
+    const canvas =
+      document.createElement("canvas");
+
+    canvas.width =
+      Math.max(
+        60,
+        Math.round(image.naturalWidth * scale)
+      );
+
+    canvas.height =
+      Math.max(
+        60,
+        Math.round(image.naturalHeight * scale)
+      );
+
+    const context =
+      canvas.getContext("2d");
+
+    context.drawImage(
+      image,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+
+    const found =
+      await findBestQualityForTarget(
+        canvas,
+        target
+      );
+
+    if (found) {
+      return found;
+    }
+
+
+    /*
+      Even the lowest JPEG quality at this
+      resolution is still above target —
+      shrink the canvas and try the binary
+      search again at a smaller size.
+    */
+
+    scale *= 0.82;
+
+  }
+
+
+  /*
+    Fallback if 8 shrink attempts were not
+    enough (extremely small target size).
+    Return the smallest, lowest quality
+    version so the user still gets a file.
+  */
+
+  const fallbackCanvas =
+    document.createElement("canvas");
+
+  fallbackCanvas.width =
+    Math.max(
+      40,
+      Math.round(image.naturalWidth * scale)
+    );
+
+  fallbackCanvas.height =
+    Math.max(
+      40,
+      Math.round(image.naturalHeight * scale)
+    );
+
+  const fallbackContext =
+    fallbackCanvas.getContext("2d");
+
+  fallbackContext.drawImage(
+    image,
+    0,
+    0,
+    fallbackCanvas.width,
+    fallbackCanvas.height
+  );
+
+  return await canvasToBlob(fallbackCanvas, 0.4);
+
+}
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function formatBytes(bytes) {
+
+  if (bytes < 1024) {
+
+    return bytes + " B";
+
+  }
+
+
+  if (bytes < 1024 * 1024) {
+
+    return (
+      (bytes / 1024).toFixed(1) +
+      " KB"
+    );
+
+  }
+
+
+  return (
+    (bytes / (1024 * 1024)).toFixed(2) +
+    " MB"
+  );
+
+}
+
+
+function showError(message) {
+
+  statusMessage.className =
+    "status-message error";
+
+  statusMessage.textContent =
+    message;
+
+}
+
+
+function showSuccess(message) {
+
+  statusMessage.className =
+    "status-message success";
+
+  statusMessage.textContent =
+    message;
+
 }
