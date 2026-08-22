@@ -1,4 +1,4 @@
-/* TargetKB script.js — v7 (target value in result, disabled-button hint) */
+/* TargetKB script.js — v10 (hide stale result on custom-size change) */
 
 const imageInput = document.getElementById("imageInput");
 
@@ -37,6 +37,8 @@ const downloadButton = document.getElementById("downloadButton");
 let selectedFile = null;
 let targetSize = 51200;
 let currentDownloadUrl = null;
+let currentSelectedPreviewUrl = null;
+let currentOriginalPreviewUrl = null;
 let isCompressing = false;
 
 
@@ -91,11 +93,44 @@ customSize.addEventListener("input", function() {
 
   const kb = Number(customSize.value);
 
-  if (kb >= 10) {
+  if (kb >= 10 && kb <= 50000) {
     targetSize = kb * 1024;
   } else {
     targetSize = null;
   }
+
+  resultSection.classList.add("hidden");
+
+});
+
+
+/* =========================
+   CLICK ANYWHERE IN BOX
+   (upload-box is now a div, not a
+   label, so clicking empty space
+   needs to open the file picker
+   manually — except when tapping
+   the Choose Image label itself,
+   which already handles it, or
+   when an image is already selected)
+========================= */
+
+uploadBox.addEventListener("click", function(event) {
+
+  if (isCompressing) {
+    return;
+  }
+
+  if (!uploadSelected.classList.contains("hidden")) {
+    return;
+  }
+
+  if (event.target.closest(".choose-button")) {
+    return;
+  }
+
+  imageInput.value = "";
+  imageInput.click();
 
 });
 
@@ -132,11 +167,16 @@ function selectFile(file) {
   selectedFile = file;
 
 
-  /* Show thumbnail */
+  /* Show thumbnail (revoke old preview URL first to avoid leaks) */
 
-  const previewUrl = URL.createObjectURL(file);
+  if (currentSelectedPreviewUrl) {
+    URL.revokeObjectURL(currentSelectedPreviewUrl);
+  }
 
-  selectedPreview.src = previewUrl;
+  currentSelectedPreviewUrl =
+    URL.createObjectURL(file);
+
+  selectedPreview.src = currentSelectedPreviewUrl;
 
 
   /* Show friendly upload state */
@@ -146,7 +186,7 @@ function selectFile(file) {
 
 
   selectedInfo.textContent =
-    "Original size: " + formatBytes(file.size);
+    file.name + " • " + formatBytes(file.size);
 
 
   compressButton.disabled = false;
@@ -173,6 +213,7 @@ changeImageButton.addEventListener("click", function(event) {
     return;
   }
 
+  imageInput.value = "";
   imageInput.click();
 
 });
@@ -276,8 +317,15 @@ compressButton.addEventListener("click", async function() {
 
     /* Preview */
 
-    originalPreview.src =
+    if (currentOriginalPreviewUrl) {
+      URL.revokeObjectURL(currentOriginalPreviewUrl);
+    }
+
+    currentOriginalPreviewUrl =
       URL.createObjectURL(selectedFile);
+
+    originalPreview.src =
+      currentOriginalPreviewUrl;
 
     compressedPreview.src =
       currentDownloadUrl;
@@ -311,7 +359,15 @@ compressButton.addEventListener("click", async function() {
       formatBytes(targetSize);
 
 
-    if (blob.size <= targetSize) {
+    const keptOriginal = (blob === selectedFile);
+
+
+    if (keptOriginal) {
+
+      qualityMessage.textContent =
+        "Your image was already smaller than the target size, so it was kept unchanged.";
+
+    } else if (blob.size <= targetSize) {
 
       const gapPercent =
         ((targetSize - blob.size) / targetSize) * 100;
@@ -340,7 +396,9 @@ compressButton.addEventListener("click", async function() {
       currentDownloadUrl;
 
     downloadButton.download =
-      "targetkb-compressed.jpg";
+      keptOriginal
+        ? selectedFile.name
+        : "targetkb-compressed.jpg";
 
 
     resultSection.classList.remove("hidden");
@@ -483,10 +541,10 @@ async function findBestQualityForTarget(canvas, target, onProgress) {
 
   let bestBlob = lowestBlob;
 
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 12; i++) {
 
     if (onProgress) {
-      onProgress(i + 1, 9);
+      onProgress(i + 1, 12);
     }
 
     const quality = (low + high) / 2;
@@ -517,6 +575,18 @@ async function findBestQualityForTarget(canvas, target, onProgress) {
 ========================= */
 
 async function compressImage(file, target) {
+
+  /*
+    If the original is already at or under
+    the target, re-encoding it as JPEG only
+    risks degrading quality for no benefit —
+    keep the original file untouched.
+  */
+
+  if (file.size <= target) {
+    return file;
+  }
+
 
   const image =
     await loadImage(file);
@@ -580,6 +650,21 @@ async function compressImage(file, target) {
     const context =
       canvas.getContext("2d");
 
+    /*
+      JPEG has no alpha channel. Without this,
+      transparent areas in a PNG or WebP source
+      render as black once encoded as JPEG.
+    */
+
+    context.fillStyle = "#ffffff";
+
+    context.fillRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
     context.drawImage(
       image,
       0,
@@ -640,6 +725,15 @@ async function compressImage(file, target) {
 
   const fallbackContext =
     fallbackCanvas.getContext("2d");
+
+  fallbackContext.fillStyle = "#ffffff";
+
+  fallbackContext.fillRect(
+    0,
+    0,
+    fallbackCanvas.width,
+    fallbackCanvas.height
+  );
 
   fallbackContext.drawImage(
     image,
