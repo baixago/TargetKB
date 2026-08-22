@@ -4,8 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TargetKB – Image Compressor</title>
-  <meta name="description" content="Compress images toward your target file size with TargetKB.">
+  <title>TargetKB – Compress Images to Your Target File Size</title>
+  <meta
+    name="description"
+    content="Compress images to your target file size with TargetKB. Reduce JPG, PNG and WebP images to 50KB, 100KB, 200KB and custom sizes. Fast, simple and browser-based."
+  >
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23101512'/%3E%3Ctext x='50' y='67' font-family='monospace' font-size='42' font-weight='700' fill='%2316a34a' text-anchor='middle'%3ETK%3C/text%3E%3C/svg%3E">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +44,7 @@
     <div class="hero-copy">
       <p class="eyebrow">FAST · PRIVATE · SIMPLE</p>
 
-      <h1>Compress Images Toward Your Target Size</h1>
+      <h1>Compress Images to Your Target File Size</h1>
 
       <p class="hero-text">
         Reduce JPG, PNG and WebP images toward 50 KB, 100 KB,
@@ -83,7 +88,7 @@
 
       <!-- UPLOAD AREA -->
 
-      <label class="upload-box" id="uploadBox" for="imageInput">
+      <div class="upload-box" id="uploadBox">
 
         <div id="uploadInitial">
 
@@ -105,7 +110,7 @@
             <span>WebP</span>
           </div>
 
-          <span class="choose-button">Choose Image</span>
+          <label class="choose-button" for="imageInput">Choose Image</label>
 
         </div>
 
@@ -157,7 +162,7 @@
           hidden
         >
 
-      </label>
+      </div>
 
       <p class="trust-badge">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -364,6 +369,91 @@
 </section>
 
 
+<section id="guide" class="privacy-section">
+
+  <div class="container privacy-box" style="text-align: left;">
+
+    <p class="section-label">GUIDE</p>
+
+    <h2 style="margin-bottom: 12px;">How to Compress an Image to a Specific Size</h2>
+
+    <p>
+      Many online forms, government portals, exam applications, and job
+      portals ask for a photo or document under a specific file size —
+      often 50KB, 100KB, or 200KB. TargetKB lets you pick that exact
+      target and get as close to it as possible without losing more
+      quality than necessary. Upload your JPG, PNG, or WebP image,
+      choose a preset or enter a custom size in KB, and download the
+      result in seconds.
+    </p>
+
+  </div>
+
+</section>
+
+
+<section id="how-targetkb-works" class="privacy-section">
+
+  <div class="container privacy-box" style="text-align: left;">
+
+    <p class="section-label">HOW TARGETKB WORKS</p>
+
+    <h2 style="margin-bottom: 12px;">Adaptive, Browser-Based Compression</h2>
+
+    <p>
+      TargetKB compresses your image directly in your browser using an
+      adaptive quality search: it tests different JPEG quality levels
+      until it lands as close as possible to your target size, and only
+      reduces resolution if the target can't be reached through quality
+      adjustment alone. Because everything runs locally, your image is
+      never uploaded to a server.
+    </p>
+
+  </div>
+
+</section>
+
+
+<section id="faq" class="privacy-section">
+
+  <div class="container privacy-box" style="text-align: left;">
+
+    <p class="section-label center" style="justify-content: flex-start;">FREQUENTLY ASKED QUESTIONS</p>
+
+    <div class="faq-list">
+
+      <details>
+        <summary>What image formats does TargetKB support?</summary>
+        <p>JPG, PNG, and WebP as input. The compressed output is saved as JPEG, since JPEG compresses more predictably to a target size.</p>
+      </details>
+
+      <details>
+        <summary>Is my image uploaded anywhere?</summary>
+        <p>No. Compression runs entirely in your browser using the Canvas API — your image is never sent to a server.</p>
+      </details>
+
+      <details>
+        <summary>Why is my compressed image slightly under my target instead of exactly matching it?</summary>
+        <p>JPEG quality doesn't map perfectly to file size. TargetKB searches for the closest possible match without going over your target.</p>
+      </details>
+
+      <details>
+        <summary>What if my original image is already smaller than my target?</summary>
+        <p>TargetKB keeps it unchanged instead of recompressing it, so you don't lose quality for no reason.</p>
+      </details>
+
+      <details>
+        <summary>Does compression reduce image dimensions?</summary>
+        <p>Only if quality reduction alone can't reach the target size. Otherwise, the original dimensions are kept.</p>
+      </details>
+
+    </div>
+
+  </div>
+
+</section>
+
+
 <section id="privacy" class="privacy-section">
 
   <div class="container privacy-box">
@@ -399,7 +489,7 @@
 </footer>
 
 
-<script src="script.js?v=7"></script>
+<script src="script.js?v=10"></script>
 
 </body>
 </html>
