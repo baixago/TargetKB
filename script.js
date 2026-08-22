@@ -1,4 +1,4 @@
-/* TargetKB script.js — v3 (2400px cap, binary search compression) */
+/* TargetKB script.js — v4 (native-resolution binary search, tight target accuracy) */
 
 const imageInput = document.getElementById("imageInput");
 
@@ -475,7 +475,7 @@ async function findBestQualityForTarget(canvas, target) {
 
   let bestBlob = lowestBlob;
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 14; i++) {
 
     const quality = (low + high) / 2;
 
@@ -511,22 +511,33 @@ async function compressImage(file, target) {
 
 
   /*
-    Phone camera photos are often 3000-5000px
-    wide. Running the quality binary search at
-    full resolution makes every toBlob() call
-    slower — but capping too aggressively wastes
-    the target's byte budget: a small, low-res
-    canvas can already fit the target at near-max
-    quality, leaving KB unused and producing a
-    softer result than the target size allows.
+    Earlier versions capped the working
+    resolution (1600px, then 2400px) before
+    running the quality search. That was the
+    real bug: capping resolution limits how
+    much byte-range the quality dial can cover,
+    so the search converged well short of the
+    target even at max quality — leaving budget
+    unused and the image softer than it needed
+    to be.
 
-    2400px keeps things fast while letting most
-    targets (100 KB and up) actually use their
-    full budget for detail instead of leaving it
-    on the table.
+    Quality alone gives fine, continuous control
+    over file size at native resolution, so the
+    binary search below can land within a few KB
+    of the target on its own. Resolution is only
+    reduced afterwards, and only if even the
+    lowest JPEG quality at native size is still
+    above the target (i.e. the target is too
+    small for this resolution to reach at all).
+
+    4096px here is purely a safety ceiling to
+    avoid crashing the canvas on unusually large
+    source photos — it is not meant to affect
+    typical phone camera resolutions (usually
+    3000-4500px on the long side).
   */
 
-  const MAX_DIMENSION = 2400;
+  const MAX_DIMENSION = 4096;
 
   const longestSide =
     Math.max(image.naturalWidth, image.naturalHeight);
