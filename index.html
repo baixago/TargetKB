@@ -7,7 +7,7 @@
   <title>TargetKB – Compress Images to Your Target File Size</title>
   <meta
     name="description"
-    content="Compress images to your target file size with TargetKB. Reduce JPG, PNG and WebP images to 50KB, 100KB, 200KB and custom sizes. Fast, simple and browser-based."
+    content="Compress images to your target file size with TargetKB. Reduce JPG, PNG and WebP images to 50KB, 100KB or a custom target size. Fast, simple and browser-based."
   >
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23101512'/%3E%3Ctext x='50' y='67' font-family='monospace' font-size='42' font-weight='700' fill='%2316a34a' text-anchor='middle'%3ETK%3C/text%3E%3C/svg%3E">
@@ -88,7 +88,7 @@
 
       <!-- UPLOAD AREA -->
 
-      <div class="upload-box" id="uploadBox">
+      <div class="upload-box" id="uploadBox" role="button" tabindex="0" aria-label="Choose or drop an image to upload">
 
         <div id="uploadInitial">
 
@@ -380,11 +380,13 @@
     <p>
       Many online forms, government portals, exam applications, and job
       portals ask for a photo or document under a specific file size —
-      often 50KB, 100KB, or 200KB. TargetKB lets you pick that exact
-      target and get as close to it as possible without losing more
-      quality than necessary. Upload your JPG, PNG, or WebP image,
-      choose a preset or enter a custom size in KB, and download the
-      result in seconds.
+      often 50KB or 100KB. TargetKB lets you pick that target size and
+      gets as close to it as possible without losing more quality than
+      necessary. Upload your JPG, PNG, or WebP image, choose a preset or
+      enter a custom size in KB, and download the result in seconds.
+      The compressed file is saved as JPEG, and any transparent areas
+      in a PNG or WebP source will get a white background, since JPEG
+      doesn't support transparency.
     </p>
 
   </div>
@@ -402,11 +404,14 @@
 
     <p>
       TargetKB compresses your image directly in your browser using an
-      adaptive quality search: it tests different JPEG quality levels
-      until it lands as close as possible to your target size, and only
-      reduces resolution if the target can't be reached through quality
-      adjustment alone. Because everything runs locally, your image is
-      never uploaded to a server.
+      adaptive quality search. For faster processing, very large images
+      are first scaled down to a maximum of 3200px on their longest
+      side. The compressor then tests different JPEG quality levels
+      until it lands as close as possible to your target size without
+      going over it — and if
+      the target still can't be reached, the resolution is reduced
+      further and the search runs again. Because everything runs
+      locally, your image is never uploaded to a server.
     </p>
 
   </div>
@@ -444,7 +449,7 @@
 
       <details>
         <summary>Does compression reduce image dimensions?</summary>
-        <p>Only if quality reduction alone can't reach the target size. Otherwise, the original dimensions are kept.</p>
+        <p>Very large images are first scaled down to a maximum of 3200px on their longest side for faster processing. If the target size still can't be reached, the resolution may be reduced further.</p>
       </details>
 
     </div>
@@ -489,7 +494,7 @@
 </footer>
 
 
-<script src="script.js?v=10"></script>
+<script src="script.js?v=14"></script>
 
 </body>
 </html>
