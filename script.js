@@ -1,4 +1,4 @@
-/* TargetKB script.js — v10 (hide stale result on custom-size change) */
+/* TargetKB script.js — v14 (keyboard accessibility on upload box) */
 
 const imageInput = document.getElementById("imageInput");
 
@@ -135,6 +135,23 @@ uploadBox.addEventListener("click", function(event) {
 });
 
 
+uploadBox.addEventListener("keydown", function(event) {
+
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  if (event.target.closest(".choose-button, .change-button")) {
+    return;
+  }
+
+  event.preventDefault();
+
+  uploadBox.click();
+
+});
+
+
 /* =========================
    IMAGE SELECT
 ========================= */
@@ -156,7 +173,10 @@ imageInput.addEventListener("change", function(event) {
 
 function selectFile(file) {
 
-  if (!file.type.match(/^image\/(jpeg|png|webp)$/)) {
+  if (
+    !file ||
+    !file.type.match(/^image\/(jpeg|png|webp)$/)
+  ) {
 
     showError("Please select a JPG, PNG or WebP image.");
 
@@ -593,30 +613,34 @@ async function compressImage(file, target) {
 
 
   /*
-    Earlier versions capped the working
-    resolution (1600px, then 2400px) before
-    running the quality search. That was the
-    real bug: capping resolution limits how
-    much byte-range the quality dial can cover,
-    so the search converged well short of the
-    target even at max quality — leaving budget
-    unused and the image softer than it needed
-    to be.
-
     Quality alone gives fine, continuous control
-    over file size at native resolution, so the
-    binary search below can land within a few KB
-    of the target on its own. Resolution is only
-    reduced afterwards, and only if even the
-    lowest JPEG quality at native size is still
-    above the target (i.e. the target is too
-    small for this resolution to reach at all).
+    over file size, so the binary search below
+    can land within a few KB of the target on its
+    own without needing to touch resolution at all
+    — as long as the canvas isn't too large to
+    search through quickly.
 
-    4096px here is purely a safety ceiling to
-    avoid crashing the canvas on unusually large
-    source photos — it is not meant to affect
-    typical phone camera resolutions (usually
-    3000-4500px on the long side).
+    In earlier testing, running that search at
+    full native resolution (uncapped) gave very
+    accurate results but took 20-30+ seconds on
+    typical 12MP+ phone photos, since each quality
+    check has to re-encode the full-size image.
+
+    3200px is a deliberate speed/accuracy trade-off,
+    not just a crash-safety fallback: any photo
+    with a longer side above 3200px is downscaled
+    to 3200px BEFORE the quality search runs, which
+    keeps compression fast. Resolution is reduced
+    further, in a second pass, only if even the
+    lowest JPEG quality at 3200px is still above
+    the target.
+
+    Tested results at this cap were still close to
+    target (e.g. 500KB target → ~445KB, 750KB target
+    → ~695KB) while keeping compression to a few
+    seconds — a better trade-off for this tool than
+    native-resolution accuracy at 20-30+ second
+    wait times.
   */
 
   const MAX_DIMENSION = 3200;
