@@ -1,4 +1,4 @@
-/* TargetKB script.js — v6 (3200px cap, 9 iterations, live progress) */
+/* TargetKB script.js — v7 (target value in result, disabled-button hint) */
 
 const imageInput = document.getElementById("imageInput");
 
@@ -16,6 +16,7 @@ const customBox = document.getElementById("customBox");
 const customSize = document.getElementById("customSize");
 
 const compressButton = document.getElementById("compressButton");
+const compressHint = document.getElementById("compressHint");
 const statusMessage = document.getElementById("statusMessage");
 
 const resultSection = document.getElementById("resultSection");
@@ -27,6 +28,7 @@ const originalInfo = document.getElementById("originalInfo");
 const compressedInfo = document.getElementById("compressedInfo");
 
 const savedPercentage = document.getElementById("savedPercentage");
+const targetInfo = document.getElementById("targetInfo");
 const qualityMessage = document.getElementById("qualityMessage");
 
 const downloadButton = document.getElementById("downloadButton");
@@ -148,6 +150,8 @@ function selectFile(file) {
 
 
   compressButton.disabled = false;
+
+  compressHint.classList.add("hidden");
 
   resultSection.classList.add("hidden");
 
@@ -301,6 +305,10 @@ compressButton.addEventListener("click", async function() {
 
     savedPercentage.textContent =
       saved + "%";
+
+
+    targetInfo.textContent =
+      formatBytes(targetSize);
 
 
     if (blob.size <= targetSize) {
