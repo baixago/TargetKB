@@ -405,6 +405,7 @@ nav a:hover {
 
 .choose-button,
 .change-button {
+  display: inline-block;
   margin-top: 15px;
   padding: 10px 18px;
   border: 0;
@@ -466,6 +467,9 @@ nav a:hover {
   color: var(--soft);
   font-family: "JetBrains Mono", monospace;
   font-size: 12.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .upload-selected .change-button {
@@ -865,6 +869,48 @@ nav a:hover {
   margin: auto;
   color: var(--soft);
   font-size: 14.5px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-list details {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f6f8f7;
+}
+
+.faq-list summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  list-style: none;
+}
+
+.faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-list summary::before {
+  content: "+";
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
+.faq-list details[open] summary::before {
+  content: "–";
+}
+
+.faq-list details p {
+  margin-top: 8px;
+  color: var(--soft);
+  font-size: 13.5px;
 }
 
 
