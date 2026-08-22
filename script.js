@@ -1,4 +1,4 @@
-/* TargetKB script.js — v5 (native resolution, quality up to 0.99, cache-busted) */
+/* TargetKB script.js — v6 (3200px cap, 9 iterations, live progress) */
 
 const imageInput = document.getElementById("imageInput");
 
@@ -454,7 +454,7 @@ function canvasToBlob(canvas, quality) {
    instead of stepping down in coarse jumps.
 ========================================= */
 
-async function findBestQualityForTarget(canvas, target) {
+async function findBestQualityForTarget(canvas, target, onProgress) {
 
   let low = 0.05;
   let high = 0.99;
@@ -475,7 +475,11 @@ async function findBestQualityForTarget(canvas, target) {
 
   let bestBlob = lowestBlob;
 
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 9; i++) {
+
+    if (onProgress) {
+      onProgress(i + 1, 9);
+    }
 
     const quality = (low + high) / 2;
 
@@ -537,7 +541,7 @@ async function compressImage(file, target) {
     3000-4500px on the long side).
   */
 
-  const MAX_DIMENSION = 4096;
+  const MAX_DIMENSION = 3200;
 
   const longestSide =
     Math.max(image.naturalWidth, image.naturalHeight);
@@ -580,7 +584,11 @@ async function compressImage(file, target) {
     const found =
       await findBestQualityForTarget(
         canvas,
-        target
+        target,
+        function(step, totalSteps) {
+          statusMessage.textContent =
+            "Working on your image... (" + step + "/" + totalSteps + ")";
+        }
       );
 
     if (found) {
