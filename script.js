@@ -1,4 +1,4 @@
-/* TargetKB script.js — v4 (native-resolution binary search, tight target accuracy) */
+/* TargetKB script.js — v5 (native resolution, quality up to 0.99, cache-busted) */
 
 const imageInput = document.getElementById("imageInput");
 
@@ -457,7 +457,7 @@ function canvasToBlob(canvas, quality) {
 async function findBestQualityForTarget(canvas, target) {
 
   let low = 0.05;
-  let high = 0.97;
+  let high = 0.99;
 
   /*
     If even the lowest quality is still
