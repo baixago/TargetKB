@@ -159,6 +159,14 @@
 
       </label>
 
+      <p class="trust-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="10" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+        </svg>
+        100% browser-based — your image is never uploaded
+      </p>
+
 
       <!-- TARGET SIZE -->
 
@@ -240,6 +248,10 @@
         Compress Image
       </button>
 
+      <p id="compressHint" class="compress-hint">
+        Select an image to continue
+      </p>
+
       <p id="statusMessage" class="status-message"></p>
 
     </div>
@@ -285,6 +297,11 @@
 
 
       <div class="result-summary">
+
+        <div class="summary-row">
+          <span>Target</span>
+          <strong id="targetInfo">—</strong>
+        </div>
 
         <p>
           Size saved:
@@ -382,7 +399,7 @@
 </footer>
 
 
-<script src="script.js?v=6"></script>
+<script src="script.js?v=7"></script>
 
 </body>
 </html>
