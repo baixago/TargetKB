@@ -1035,3 +1035,14 @@ footer {
     transition: none;
   }
 }
+
+
+/* KEYBOARD FOCUS */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
