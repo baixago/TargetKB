@@ -1,3 +1,5 @@
+/* TargetKB script.js — v3 (2400px cap, binary search compression) */
+
 const imageInput = document.getElementById("imageInput");
 
 const uploadBox = document.getElementById("uploadBox");
@@ -455,7 +457,7 @@ function canvasToBlob(canvas, quality) {
 async function findBestQualityForTarget(canvas, target) {
 
   let low = 0.05;
-  let high = 0.95;
+  let high = 0.97;
 
   /*
     If even the lowest quality is still
@@ -512,13 +514,19 @@ async function compressImage(file, target) {
     Phone camera photos are often 3000-5000px
     wide. Running the quality binary search at
     full resolution makes every toBlob() call
-    slow. Start from a capped working size —
-    it has no visible effect on a 50-500 KB
-    JPEG since that resolution already exceeds
-    what the target file size can hold.
+    slower — but capping too aggressively wastes
+    the target's byte budget: a small, low-res
+    canvas can already fit the target at near-max
+    quality, leaving KB unused and producing a
+    softer result than the target size allows.
+
+    2400px keeps things fast while letting most
+    targets (100 KB and up) actually use their
+    full budget for detail instead of leaving it
+    on the table.
   */
 
-  const MAX_DIMENSION = 1600;
+  const MAX_DIMENSION = 2400;
 
   const longestSide =
     Math.max(image.naturalWidth, image.naturalHeight);
