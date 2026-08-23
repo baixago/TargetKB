@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://baixago.github.io/TargetKB/sitemap.xml
