@@ -1,4 +1,4 @@
-/* TargetKB script.js — v14 (keyboard accessibility on upload box) */
+/* TargetKB script.js — v17 (no JS changes; paired with dedicated privacy.html/terms.html/contact.html pages) */
 
 const imageInput = document.getElementById("imageInput");
 
@@ -137,11 +137,19 @@ uploadBox.addEventListener("click", function(event) {
 
 uploadBox.addEventListener("keydown", function(event) {
 
+  if (isCompressing) {
+    return;
+  }
+
   if (event.key !== "Enter" && event.key !== " ") {
     return;
   }
 
   if (event.target.closest(".choose-button, .change-button")) {
+    return;
+  }
+
+  if (!uploadSelected.classList.contains("hidden")) {
     return;
   }
 
