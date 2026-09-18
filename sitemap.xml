@@ -1,20 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url>
-<loc>https://baixago.github.io/TargetKB/</loc>
-</url>
-<url>
-<loc>https://baixago.github.io/TargetKB/privacy.html</loc>
-</url>
-<url>
-<loc>https://baixago.github.io/TargetKB/terms.html</loc>
-</url>
-<url>
-<loc>https://baixago.github.io/TargetKB/contact.html</loc>
-</url>
-<url>
-<loc>https://baixago.github.io/TargetKB/compress-us-visa-dv-lottery-photo-240kb.html</loc>
-</url>
-<url>
-<loc>https://baixago.github.io/TargetKB/compress-schengen-visa-photo.html</loc>
-</url>
+
+  <url>
+    <loc>https://baixago.github.io/TargetKB/</loc>
+  </url>
+
+  <url>
+    <loc>https://baixago.github.io/TargetKB/privacy.html</loc>
+  </url>
+
+  <url>
+    <loc>https://baixago.github.io/TargetKB/terms.html</loc>
+  </url>
+
+  <url>
+    <loc>https://baixago.github.io/TargetKB/contact.html</loc>
+  </url>
+
+  <url>
+    <loc>https://baixago.github.io/TargetKB/compress-us-visa-dv-lottery-photo-240kb.html</loc>
+  </url>
+
+  <url>
+    <loc>https://baixago.github.io/TargetKB/compress-schengen-visa-photo.html</loc>
+  </url>
+
+  <url>
+    <loc>https://baixago.github.io/TargetKB/compress-image-to-50kb.html</loc>
+  </url>
+
 </urlset>
